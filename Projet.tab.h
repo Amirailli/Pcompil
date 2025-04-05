@@ -104,13 +104,14 @@ typedef union YYSTYPE
 /* Line 1676 of yacc.c  */
 #line 10 "Projet.y"
 
-int entier;
-char* str;
+    int entier;
+    char* str;
+    float floatVal;
 
 
 
 /* Line 1676 of yacc.c  */
-#line 114 "Projet.tab.h"
+#line 115 "Projet.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

@@ -135,7 +135,8 @@ void insererS(char entite[], char code[]) {
 // fonction qui insère le type d'une etité une fois il va être reconnu dans la syntaxe 
 void insererType(char entite[], char type[])
 {
-   int posEntite=rechercheTS(entite);
+   int posEntite=rechercheTS(entite);  
+   int statutDeclaration = rechercheType(entite);
     if (posEntite!=-1) // si l'entité existe dans la TS
     { 
         strcpy(ts[posEntite].TypeEntite,type);

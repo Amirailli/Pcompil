@@ -169,13 +169,14 @@ typedef union YYSTYPE
 /* Line 214 of yacc.c  */
 #line 10 "Projet.y"
 
-int entier;
-char* str;
+    int entier;
+    char* str;
+    float floatVal;
 
 
 
 /* Line 214 of yacc.c  */
-#line 179 "Projet.tab.c"
+#line 180 "Projet.tab.c"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
@@ -187,7 +188,7 @@ char* str;
 
 
 /* Line 264 of yacc.c  */
-#line 191 "Projet.tab.c"
+#line 192 "Projet.tab.c"
 
 #ifdef short
 # undef short
@@ -503,13 +504,13 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    47,    47,    51,    55,    56,    60,    61,    62,    66,
-      70,    77,    90,    91,    95,    99,   109,   110,   111,   114,
-     115,   118,   119,   120,   121,   122,   125,   126,   129,   131,
-     134,   135,   136,   137,   138,   139,   142,   143,   144,   145,
-     146,   147,   150,   151,   154,   157,   162,   165,   168,   169,
-     170,   171,   172,   175,   176,   177,   178,   179,   180,   181,
-     182,   183
+       0,    51,    51,    55,    59,    60,    64,    65,    66,    70,
+      74,    81,    91,    92,    96,   100,   110,   111,   112,   115,
+     116,   119,   120,   121,   122,   123,   126,   129,   135,   137,
+     140,   141,   142,   143,   144,   145,   148,   149,   150,   151,
+     152,   153,   156,   157,   160,   163,   171,   174,   177,   178,
+     179,   180,   181,   184,   185,   186,   187,   194,   195,   196,
+     197,   198
 };
 #endif
 
@@ -1520,7 +1521,7 @@ yyreduce:
         case 10:
 
 /* Line 1455 of yacc.c  */
-#line 70 "Projet.y"
+#line 74 "Projet.y"
     { 
                             if(rechercheType((yyvsp[(3) - (3)].str))==0) {
                                 insererType((yyvsp[(3) - (3)].str),SauvType);
@@ -1533,7 +1534,7 @@ yyreduce:
   case 11:
 
 /* Line 1455 of yacc.c  */
-#line 77 "Projet.y"
+#line 81 "Projet.y"
     {      
                 if (rechercheType((yyvsp[(1) - (1)].str))==0){
                     insererType((yyvsp[(1) - (1)].str),SauvType);
@@ -1546,21 +1547,21 @@ yyreduce:
   case 12:
 
 /* Line 1455 of yacc.c  */
-#line 90 "Projet.y"
+#line 91 "Projet.y"
     {strcpy(SauvType,"INT");;}
     break;
 
   case 13:
 
 /* Line 1455 of yacc.c  */
-#line 91 "Projet.y"
+#line 92 "Projet.y"
     {strcpy(SauvType,"FLOAT");;}
     break;
 
   case 15:
 
 /* Line 1455 of yacc.c  */
-#line 99 "Projet.y"
+#line 100 "Projet.y"
     {
         if (rechercheType((yyvsp[(3) - (8)].str)) == 0) {
             insererType((yyvsp[(3) - (8)].str), SauvType); 
@@ -1570,10 +1571,85 @@ yyreduce:
     ;}
     break;
 
+  case 26:
+
+/* Line 1455 of yacc.c  */
+#line 126 "Projet.y"
+    {
+                                           if (rechercheType((yyvsp[(1) - (3)].str)) == 0) printf("Erreur semantique: %s non declare a la ligne %d\n", (yyvsp[(1) - (3)].str), nb_ligne);
+                                         ;}
+    break;
+
+  case 27:
+
+/* Line 1455 of yacc.c  */
+#line 130 "Projet.y"
+    {
+                                   if (rechercheType((yyvsp[(1) - (6)].str)) == 0) printf("Erreur semantique: %s non declare a la ligne %d\n", (yyvsp[(1) - (6)].str), nb_ligne);
+                                  ;}
+    break;
+
+  case 45:
+
+/* Line 1455 of yacc.c  */
+#line 165 "Projet.y"
+    {
+                  if (rechercheType((yyvsp[(2) - (11)].str)) == 0) printf("Erreur semantique: %s non declare a la ligne %d\n", (yyvsp[(2) - (11)].str), nb_ligne);
+              ;}
+    break;
+
+  case 56:
+
+/* Line 1455 of yacc.c  */
+#line 187 "Projet.y"
+    {
+                                           if ((yyvsp[(3) - (3)].entier) == 0) {
+                                               printf("Erreur semantique à la ligne %d : division par 0 \n", nb_ligne);
+                                           } else {
+                                               (yyval.entier) = (yyvsp[(1) - (3)].entier) / (yyvsp[(3) - (3)].entier);  // Traitement spécifique pour les entiers
+                                           }
+                                       ;}
+    break;
+
+  case 57:
+
+/* Line 1455 of yacc.c  */
+#line 194 "Projet.y"
+    { (yyval.entier) = (yyvsp[(2) - (3)].entier); ;}
+    break;
+
+  case 58:
+
+/* Line 1455 of yacc.c  */
+#line 195 "Projet.y"
+    { (yyval.entier) = (yyvsp[(1) - (1)].str); if (rechercheType((yyvsp[(1) - (1)].str)) == 0) printf("Erreur semantique: %s non declare a la ligne %d\n", (yyvsp[(1) - (1)].str), nb_ligne); ;}
+    break;
+
+  case 59:
+
+/* Line 1455 of yacc.c  */
+#line 196 "Projet.y"
+    { (yyval.entier) = (yyvsp[(1) - (1)].entier); ;}
+    break;
+
+  case 60:
+
+/* Line 1455 of yacc.c  */
+#line 197 "Projet.y"
+    { (yyval.entier) = (yyvsp[(1) - (1)].floatVal); ;}
+    break;
+
+  case 61:
+
+/* Line 1455 of yacc.c  */
+#line 198 "Projet.y"
+    { (yyval.entier) = (yyvsp[(1) - (1)].entier); ;}
+    break;
+
 
 
 /* Line 1455 of yacc.c  */
-#line 1577 "Projet.tab.c"
+#line 1653 "Projet.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1785,7 +1861,7 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
-#line 186 "Projet.y"
+#line 201 "Projet.y"
 
 
 int main() {
@@ -1793,7 +1869,7 @@ int main() {
 
     yyparse();
 
-    afficherTS();         // Affiche les résultats une fois l'analyse terminée
+    afficherTS();        
     afficherM();
     afficherS();
 

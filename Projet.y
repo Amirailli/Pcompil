@@ -8,14 +8,18 @@
 %start Program
 
 %union {
-int entier;
-char* str;
+    int entier;
+    char* str;
+    float floatVal;
 }
+
+%type <entier> expression
 
 %token MAINPRGM VAR BEGINPG ENDPG LET ATDEF CONST INPUT OUTPUT
 %token <str> TYPEINT TYPEFLOAT 
 %token <entier> ENTIER ENTIERSIGNE
-%token FLOAT ENTIERERROR
+%token <floatVal> FLOAT 
+%token ENTIERERROR
 %token <str> IDF 
 /* Opérateurs arithmétiques */
 %token PLUS MINUS TIMES DIV 
@@ -82,9 +86,6 @@ liste_idf:
                 }
          }
    ;
-;
-
-
 
 type:
     TYPEINT {strcpy(SauvType,"INT");}
@@ -122,8 +123,13 @@ instruction : affectation PVG
             | output PVG
             ;
 
-affectation : IDF AFFECTATION expression
+affectation : IDF AFFECTATION expression {
+                                           if (rechercheType($1) == 0) printf("Erreur semantique: %s non declare a la ligne %d\n", $1, nb_ligne);
+                                         }
             | IDF CROCHETOUVERT expression CROCHETFERME AFFECTATION expression
+                                  {
+                                   if (rechercheType($1) == 0) printf("Erreur semantique: %s non declare a la ligne %d\n", $1, nb_ligne);
+                                  }
             ;
 
 condition : IF PARENTHESEOUVERT expression_logique PARENTHESEFERME THEN
@@ -156,6 +162,9 @@ boucle_do : DO OUVEREBLOC instructions FERMETBLOC WHILE PARENTHESEOUVERT express
 
 boucle_for : FOR IDF FROM expression TO expression STEP expression 
             OUVEREBLOC instructions FERMETBLOC
+              {
+                  if (rechercheType($2) == 0) printf("Erreur semantique: %s non declare a la ligne %d\n", $2, nb_ligne);
+              }
           ;
 
 
@@ -175,12 +184,18 @@ contenu : CHAINE
 expression : expression PLUS expression
            | expression MINUS expression
            | expression TIMES expression
-           | expression DIV expression
-           | PARENTHESEOUVERT expression PARENTHESEFERME
-           | IDF
-           | ENTIERSIGNE
-           | FLOAT
-           | ENTIER
+           | expression DIV expression {
+                                           if ($3 == 0) {
+                                               printf("Erreur semantique à la ligne %d : division par 0 \n", nb_ligne);
+                                           } else {
+                                               $$ = $1 / $3;  // Traitement spécifique pour les entiers
+                                           }
+                                       }
+           | PARENTHESEOUVERT expression PARENTHESEFERME { $$ = $2; }
+           | IDF  { $$ = $1; if (rechercheType($1) == 0) printf("Erreur semantique: %s non declare a la ligne %d\n", $1, nb_ligne); }
+           | ENTIERSIGNE { $$ = $1; }
+           | FLOAT { $$ = $1; }
+           | ENTIER { $$ = $1; }
            ;
 
 %%
@@ -190,7 +205,7 @@ int main() {
 
     yyparse();
 
-    afficherTS();         // Affiche les résultats une fois l'analyse terminée
+    afficherTS();        
     afficherM();
     afficherS();
 

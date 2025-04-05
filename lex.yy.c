@@ -873,12 +873,12 @@ YY_RULE_SETUP
 case 18:
 YY_RULE_SETUP
 #line 81 "Projet.l"
-{ printf("float non signe %s\n", yytext);nb_colonne += yyleng; insererTS(yytext, "FLOAT"); return FLOAT; }
+{ printf("float non signe %s\n", yytext);nb_colonne += yyleng;yylval.floatVal = atof(yytext);  insererTS(yytext, "FLOAT"); return FLOAT; }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
 #line 83 "Projet.l"
-{ printf("float signe %s\n", yytext); insererTS(yytext, "FLOAT");nb_colonne += yyleng; return FLOAT;  }
+{ printf("float signe %s\n", yytext); yylval.floatVal = atof(yytext);  insererTS(yytext, "FLOAT");nb_colonne += yyleng; return FLOAT;  }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
@@ -1068,12 +1068,12 @@ YY_RULE_SETUP
 case 56:
 YY_RULE_SETUP
 #line 133 "Projet.l"
-{ printf("Lettre: %s\n", yytext);insererTS(yytext, "IDF"); yylval.str=strdup(yytext);nb_colonne += yyleng; return IDF; }
+{ printf("Lettre: %s\n", yytext); yylval.str=strdup(yytext);insererTS(yytext, "IDF");nb_colonne += yyleng; return IDF; }
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
 #line 134 "Projet.l"
-{ printf("Lettre: %s\n", yytext);insererTS(yytext, "IDF"); yylval.str=strdup(yytext);nb_colonne += yyleng; return IDF; }
+{ printf("Lettre: %s\n", yytext); yylval.str=strdup(yytext);insererTS(yytext, "IDF"); nb_colonne += yyleng; return IDF; }
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
@@ -1087,8 +1087,8 @@ YY_RULE_SETUP
                     afficher_erreur("Identificateur invalide", yytext, "Un IDF ne doit pas se terminer par '_'");
                 else 
                      printf("Identificateur valide : %s\n", yytext); 
-                     insererTS(yytext, "IDF");
                      yylval.str=strdup(yytext);
+                     insererTS(yytext, "IDF");
                 nb_colonne += yyleng;
                 return IDF;
             }  

@@ -78,9 +78,9 @@ ERREUR_UNDERS_IDENT _({lettre}|{chiffre}|_)*
     return ENTIERERROR;
 }
 
-{flottant}   { printf("float non signe %s\n", yytext);nb_colonne += yyleng; insererTS(yytext, "FLOAT"); return FLOAT; }
+{flottant}   { printf("float non signe %s\n", yytext);nb_colonne += yyleng;yylval.floatVal = atof(yytext);  insererTS(yytext, "FLOAT"); return FLOAT; }
 
-{flottant_signe} { printf("float signe %s\n", yytext); insererTS(yytext, "FLOAT");nb_colonne += yyleng; return FLOAT;  }
+{flottant_signe} { printf("float signe %s\n", yytext); yylval.floatVal = atof(yytext);  insererTS(yytext, "FLOAT");nb_colonne += yyleng; return FLOAT;  }
 
 "if"      { printf("Mot-cle : %s\n", yytext); insererTS(yytext, "IF"); nb_colonne += yyleng;return IF;}
 "then"    { printf("Mot-cle : %s\n", yytext);insererTS(yytext, "THEN"); nb_colonne += yyleng;return THEN ;}
@@ -130,8 +130,8 @@ ERREUR_UNDERS_IDENT _({lettre}|{chiffre}|_)*
 "="   { printf("Egal\n");insererS(yytext, "EGAL");nb_colonne += yyleng; return EGAL; }
 ":="  { printf("Affectation\n");insererS(yytext, " AFFECTATION");nb_colonne += yyleng; return AFFECTATION ;}
 
-{lettre}     { printf("Lettre: %s\n", yytext);insererTS(yytext, "IDF"); yylval.str=strdup(yytext);nb_colonne += yyleng; return IDF; }
-{lettreMaj}  { printf("Lettre: %s\n", yytext);insererTS(yytext, "IDF"); yylval.str=strdup(yytext);nb_colonne += yyleng; return IDF; }
+{lettre}     { printf("Lettre: %s\n", yytext); yylval.str=strdup(yytext);insererTS(yytext, "IDF");nb_colonne += yyleng; return IDF; }
+{lettreMaj}  { printf("Lettre: %s\n", yytext); yylval.str=strdup(yytext);insererTS(yytext, "IDF"); nb_colonne += yyleng; return IDF; }
 
 {IDF}       { 
                 if (yyleng > 14) 
@@ -142,8 +142,8 @@ ERREUR_UNDERS_IDENT _({lettre}|{chiffre}|_)*
                     afficher_erreur("Identificateur invalide", yytext, "Un IDF ne doit pas se terminer par '_'");
                 else 
                      printf("Identificateur valide : %s\n", yytext); 
-                     insererTS(yytext, "IDF");
                      yylval.str=strdup(yytext);
+                     insererTS(yytext, "IDF");
                 nb_colonne += yyleng;
                 return IDF;
             }  
