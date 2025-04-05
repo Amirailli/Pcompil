@@ -78,9 +78,9 @@ ERREUR_UNDERS_IDENT _({lettre}|{chiffre}|_)*
     return ENTIERERROR;
 }
 
-{flottant}   { printf("float non signe %s\n", yytext);nb_colonne += yyleng;yylval.floatVal = atof(yytext);  insererTS(yytext, "FLOAT"); return FLOAT; }
+{flottant}   { printf("float non signe %s\n", yytext);nb_colonne += yyleng;yylval.flottant = atof(yytext);  insererTS(yytext, "FLOAT"); return FLOAT; }
 
-{flottant_signe} { printf("float signe %s\n", yytext); yylval.floatVal = atof(yytext);  insererTS(yytext, "FLOAT");nb_colonne += yyleng; return FLOAT;  }
+{flottant_signe} { printf("float signe %s\n", yytext); yylval.flottant = atof(yytext);  insererTS(yytext, "FLOAT");nb_colonne += yyleng; return FLOAT;  }
 
 "if"      { printf("Mot-cle : %s\n", yytext); insererTS(yytext, "IF"); nb_colonne += yyleng;return IF;}
 "then"    { printf("Mot-cle : %s\n", yytext);insererTS(yytext, "THEN"); nb_colonne += yyleng;return THEN ;}

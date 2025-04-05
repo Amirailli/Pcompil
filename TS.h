@@ -20,71 +20,7 @@ typedef struct {
     char CodeEntite[20];
 } TypeSM;
 
-float obtenirValeurFloat(char* idf);  // Déclaration explicite
- int obtenirValeurInt(char* idf);     // Pour cohérence
- 
- float getValeur(char* idf) {
-     int pos = rechercheTS(idf);
-     if (pos != -1) {
-         if (strcmp(ts[pos].TypeEntite, "int") == 0) {
-             return (float)obtenirValeurInt(idf);
-         } else if (strcmp(ts[pos].TypeEntite, "float") == 0) {
-             return obtenirValeurFloat(idf);
-         } else {
-             return 0.0f;
-         }
-     } else {
-         printf("Erreur sémantique : Variable '%s' non déclarée\n", idf);
-         return 0.0f;
-     }
- }
- 
- int variable_declaree(char *var) {
-     return rechercheType(var); // Vérifie si la variable est présente dans la table des symboles
- }
- 
- 
- int obtenirValeurInt(char* idf) {
-     int pos = rechercheTS(idf);
-     if (pos != -1) {
-         if (strcmp(ts[pos].TypeEntite, "int") == 0) {
-             if (ts[pos].estInitialise) {
-                 return ts[pos].valeur.valeurInt;
-             } else {
-                 printf("Erreur : la variable entière '%s' n'est pas initialisée.\n", idf);
-                 exit(EXIT_FAILURE);
-             }
-         } else {
-             printf("Erreur : la variable '%s' n'est pas de type entier.\n", idf);
-             exit(EXIT_FAILURE);
-         }
-     } else {
-         printf("Erreur : variable '%s' non déclarée.\n", idf);
-         exit(EXIT_FAILURE);
-     }
- }
- 
- 
- 
- float obtenirValeurFloat(char* idf) {
-     int pos = rechercheTS(idf);
-     if (pos != -1) {
-         if (strcmp(ts[pos].TypeEntite, "float") == 0) {
-             if (ts[pos].estInitialise) {
-                 return ts[pos].valeur.valeurFloat;
-             } else {
-                 printf("Erreur : la variable flottante '%s' n'est pas initialisée.\n", idf);
-                 exit(EXIT_FAILURE);
-             }
-         } else {
-             printf("Erreur : la variable '%s' n'est pas de type flottant.\n", idf);
-             exit(EXIT_FAILURE);
-         }
-     } else {
-         printf("Erreur : variable '%s' non déclarée.\n", idf);
-         exit(EXIT_FAILURE);
-     }
- }
+
 
 TypeTS *ts;
 TypeSM *tabM;
@@ -227,7 +163,71 @@ int rechercheType(char entite[])
         return 1; // L'entité est déclarée
 }
 
-
+float obtenirValeurFloat(char* idf);  // Déclaration explicite
+ int obtenirValeurInt(char* idf);     // Pour cohérence
+ 
+ float getValeur(char* idf) {
+     int pos = rechercheTS(idf);
+     if (pos != -1) {
+         if (strcmp(ts[pos].TypeEntite, "int") == 0) {
+             return (float)obtenirValeurInt(idf);
+         } else if (strcmp(ts[pos].TypeEntite, "float") == 0) {
+             return obtenirValeurFloat(idf);
+         } else {
+             return 0.0f;
+         }
+     } else {
+         printf("Erreur sémantique : Variable '%s' non déclarée\n", idf);
+         return 0.0f;
+     }
+ }
+ 
+ int variable_declaree(char *var) {
+     return rechercheType(var); // Vérifie si la variable est présente dans la table des symboles
+ }
+ 
+ 
+ int obtenirValeurInt(char* idf) {
+     int pos = rechercheTS(idf);
+     if (pos != -1) {
+         if (strcmp(ts[pos].TypeEntite, "int") == 0) {
+             if (ts[pos].estInitialise) {
+                 return ts[pos].valeur.valeurInt;
+             } else {
+                 printf("Erreur : la variable entière '%s' n'est pas initialisée.\n", idf);
+                 exit(EXIT_FAILURE);
+             }
+         } else {
+             printf("Erreur : la variable '%s' n'est pas de type entier.\n", idf);
+             exit(EXIT_FAILURE);
+         }
+     } else {
+         printf("Erreur : variable '%s' non déclarée.\n", idf);
+         exit(EXIT_FAILURE);
+     }
+ }
+ 
+ 
+ 
+ float obtenirValeurFloat(char* idf) {
+     int pos = rechercheTS(idf);
+     if (pos != -1) {
+         if (strcmp(ts[pos].TypeEntite, "float") == 0) {
+             if (ts[pos].estInitialise) {
+                 return ts[pos].valeur.valeurFloat;
+             } else {
+                 printf("Erreur : la variable flottante '%s' n'est pas initialisée.\n", idf);
+                 exit(EXIT_FAILURE);
+             }
+         } else {
+             printf("Erreur : la variable '%s' n'est pas de type flottant.\n", idf);
+             exit(EXIT_FAILURE);
+         }
+     } else {
+         printf("Erreur : variable '%s' non déclarée.\n", idf);
+         exit(EXIT_FAILURE);
+     }
+ }
 
 // Fonction d'affichage de la TS
 void afficherTS() {
