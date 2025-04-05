@@ -10,16 +10,15 @@
 %union {
     int entier;
     char* str;
-    float floatVal;
+    float flottant ;
 }
 
-%type <entier> expression
 
 %token MAINPRGM VAR BEGINPG ENDPG LET ATDEF CONST INPUT OUTPUT
 %token <str> TYPEINT TYPEFLOAT 
-%token <entier> ENTIER ENTIERSIGNE
-%token <floatVal> FLOAT 
-%token ENTIERERROR
+%token <entier> ENTIER ENTIERSIGNE ENTIERERROR
+%token <flottant> FLOAT
+
 %token <str> IDF 
 /* Opérateurs arithmétiques */
 %token PLUS MINUS TIMES DIV 
@@ -37,6 +36,7 @@
 
 %token IF THEN ELSE DO WHILE FOR FROM TO STEP
 %token CHAINE VAR_IDF
+%type <flottant> expression 
 /* Définition des priorités et associativités */
 %left OR
 %left AND
@@ -124,6 +124,10 @@ instruction : affectation PVG
             ;
 
 affectation : IDF AFFECTATION expression {
+                                           if (!variable_declaree($1)) {
+                                          printf("Erreur semantique : Variable '%s' non declaree a la ligne %d\n", $1, nb_ligne);
+         
+     }
                                            if (rechercheType($1) == 0) printf("Erreur semantique: %s non declare a la ligne %d\n", $1, nb_ligne);
                                          }
             | IDF CROCHETOUVERT expression CROCHETFERME AFFECTATION expression
@@ -181,23 +185,23 @@ contenu : CHAINE
         | CHAINE VRG IDF
         ;
 
-expression : expression PLUS expression
-           | expression MINUS expression
-           | expression TIMES expression
-           | expression DIV expression {
-                                           if ($3 == 0) {
-                                               printf("Erreur semantique à la ligne %d : division par 0 \n", nb_ligne);
-                                           } else {
-                                               $$ = $1 / $3;  // Traitement spécifique pour les entiers
-                                           }
-                                       }
-           | PARENTHESEOUVERT expression PARENTHESEFERME { $$ = $2; }
-           | IDF  { $$ = $1; if (rechercheType($1) == 0) printf("Erreur semantique: %s non declare a la ligne %d\n", $1, nb_ligne); }
-           | ENTIERSIGNE { $$ = $1; }
-           | FLOAT { $$ = $1; }
-           | ENTIER { $$ = $1; }
-           ;
-
+expression : expression PLUS expression { $$ = $1 + $3; }
+            | expression MINUS expression { $$ = $1 - $3; }
+            | expression TIMES expression { $$ = $1 * $3; }
+            | expression DIV expression {
+                  if ($3 == 0 ) {
+                      printf("Erreur semantique : division par zero a la ligne %d\n" , nb_ligne);
+                      $$ = 0;
+                  } else {
+                      $$ = $1 / $3;
+                  }
+              }
+            | PARENTHESEOUVERT expression PARENTHESEFERME { $$ = $2; }
+            | IDF { $$ = getValeur($1); }
+            | ENTIERSIGNE { $$ = $1; }
+            | FLOAT { $$ = $1; }
+            | ENTIER { $$ = $1; }
+            ;
 %%
 
 int main() {
