@@ -3,6 +3,9 @@
     int nb_ligne = 1;
     int nb_colonne = 1;
     char SauvType[20];
+    // ajouter le tableau et le compteur
+    char liste_idfs[100][20];
+    int nb_idfs = 0;
 %}
 
 %start Program
@@ -68,29 +71,35 @@ declaration:
 
 declaration_variables:
     LET liste_idf DEUXPOINT type PVG
+    {
+      int i;
+      for (i = 0; i < nb_idfs; i++) {
+        if (rechercheType(liste_idfs[i]) == 0) {
+            insererType(liste_idfs[i], SauvType);
+        } else {
+            printf("Erreur Semantique: double declaration de %s, ligne %d\n", liste_idfs[i], nb_ligne);
+        }
+      }
+      nb_idfs = 0; // reset la liste temporaire
+    }
+;
+
+type:
+    TYPEINT {strcpy(SauvType,$1);}
+    | TYPEFLOAT {strcpy(SauvType,$1);}
 ;
 
 liste_idf:
     liste_idf VRG IDF  { 
-                            if(rechercheType($3)==0) {
-                                insererType($3,SauvType);
-                            } else {
-                                printf("Erreur Semantique: double declaration de %s, a la ligne %d\n", $3, nb_ligne);
-                            } 
+                             strcpy(liste_idfs[nb_idfs], $3);
+                             nb_idfs++;
                        }
     |IDF  {      
-                if (rechercheType($1)==0){
-                    insererType($1,SauvType);
-                } else {
-                    printf("Erreur Semantique: double declaration de %s, a la ligne %d\n", $1, nb_ligne);
-                }
+                 strcpy(liste_idfs[nb_idfs], $1);
+                 nb_idfs++;
          }
    ;
 
-type:
-    TYPEINT {strcpy(SauvType,"INT");}
-    | TYPEFLOAT {strcpy(SauvType,"FLOAT");}
-;
 
 declaration_tableau:
     LET liste_idf  DEUXPOINT CROCHETOUVERT ENTIER CROCHETFERME DEUXPOINT type PVG
@@ -205,7 +214,6 @@ expression : expression PLUS expression { $$ = $1 + $3; }
 %%
 
 int main() {
-    dynamicInit();
 
     yyparse();
 

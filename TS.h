@@ -1,9 +1,9 @@
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
-#define TAILLE_INITIALE 10
-// Déclaration de la TS
-typedef struct {
+#include <string.h>
+
+// Structures pour TS (Table des symboles)
+typedef struct TSNode {
     char NomEntite[20];
     char CodeEntite[20];
     char TypeEntite[20];
@@ -11,268 +11,246 @@ typedef struct {
         int valeurInt;
         float valeurFloat;
     } valeur;
-    int estInitialise; // Indique si la valeur a été initialisée
-} TypeTS;
+    int estInitialise;
+    struct TSNode* suivant;
+} TSNode;
 
-// Déclaration de la SM (pour mots-clés et séparateurs)
-typedef struct {
+// Structures pour SM (mots-clés et séparateurs)
+typedef struct SMNode {
     char NomEntite[20];
     char CodeEntite[20];
-} TypeSM;
+    struct SMNode* suivant;
+} SMNode;
 
+TSNode* tsHead = NULL;
+SMNode* motsClesHead = NULL;
+SMNode* separateursHead = NULL;
 
-
-TypeTS *ts;
-TypeSM *tabM;
-TypeSM *tabS;
-int capaciteTS = TAILLE_INITIALE;
-int capaciteM = TAILLE_INITIALE;
-int capaciteS = TAILLE_INITIALE;
-int CpTS = 0;
-int CpM = 0;
-int CpS = 0;
-
-// Fonction d'initialisation dynamique
-void dynamicInit() {
-    ts = (TypeTS*)malloc(capaciteTS * sizeof(TypeTS));
-    tabM = (TypeSM*)malloc(capaciteM * sizeof(TypeSM));
-    tabS = (TypeSM*)malloc(capaciteS * sizeof(TypeSM));
-}
-// Fonction d'agrandissement de la TS
-void agrandirTS() {
-    capaciteTS *= 2;
-    ts = (TypeTS*)realloc(ts, capaciteTS * sizeof(TypeTS));
-    if (ts == NULL) {
-        printf("Erreur lors de l'agrandissement de la TS\n");
-        exit(EXIT_FAILURE);
-    }
-}
-
-// Fonction d'agrandissement de tabM
-void agrandirM() {
-    capaciteM *= 2;
-    tabM = (TypeSM*)realloc(tabM, capaciteM * sizeof(TypeSM));
-    if (tabM == NULL) {
-        printf("Erreur lors de l'agrandissement de tabM\n");
-        exit(EXIT_FAILURE);
-    }
-}
-
-// Fonction d'agrandissement de tabS
-void agrandirS() {
-    capaciteS *= 2;
-    tabS = (TypeSM*)realloc(tabS, capaciteS * sizeof(TypeSM));
-    if (tabS == NULL) {
-        printf("Erreur lors de l'agrandissement de tabS\n");
-        exit(EXIT_FAILURE);
-    }
-}
-
-// Fonction de recherche dans la TS
-int rechercheTS(char entite[]) {
-    int i;
-    for (i = 0; i < CpTS; i++) {
-        if (strcmp(entite, ts[i].NomEntite) == 0)
-            return i;
-    }
-    return -1;
-}
-
-// Fonction de recherche dans la SM (Mots-clés)
-int rechercheM(char entite[]) {
-    int i;
-    for (i = 0; i < CpM; i++) {
-        if (strcmp(entite, tabM[i].NomEntite) == 0)
-            return i;
-    }
-    return -1;
-}
-
-// Fonction de recherche dans la SM (Séparateurs)
-int rechercheS(char entite[]) {
-    int i;
-    for (i = 0; i < CpS; i++) {
-        if (strcmp(entite, tabS[i].NomEntite) == 0)
-            return i;
-    }
-    return -1;
-}
-
+// Insertion TS
 void insererTS(char entite[], char code[]) {
     if (rechercheTS(entite) == -1) {
-        if (CpTS >= capaciteTS) {  // Vérifie la capacité avant insertion
-            agrandirTS();
-        }
-        // Vérifie la place après l'agrandissement
-        strcpy(ts[CpTS].NomEntite, entite);
-        strcpy(ts[CpTS].CodeEntite, code);
-        strcpy(ts[CpTS].TypeEntite, "");
-        CpTS++;   
+        TSNode* nouv = (TSNode*)malloc(sizeof(TSNode));
+        strcpy(nouv->NomEntite, entite);
+        strcpy(nouv->CodeEntite, code);
+        strcpy(nouv->TypeEntite, "");
+        nouv->estInitialise = 0;
+        nouv->suivant = tsHead;
+        tsHead = nouv;
     }
 }
 
-
-
-// Fonction d'insertion dans tabM (Mots-clés)
+// Insertion Mots-clés
 void insererM(char entite[], char code[]) {
     if (rechercheM(entite) == -1) {
-        if (CpM >= capaciteM) {
-            agrandirM();  // Agrandir si la capacité est atteinte
-        } 
-        strcpy(tabM[CpM].NomEntite, entite);
-        strcpy(tabM[CpM].CodeEntite, code);
-        CpM++;
-        
+        SMNode* nouv = (SMNode*)malloc(sizeof(SMNode));
+        strcpy(nouv->NomEntite, entite);
+        strcpy(nouv->CodeEntite, code);
+        nouv->suivant = motsClesHead;
+        motsClesHead = nouv;
     }
 }
 
-// Fonction d'insertion dans tabS (Séparateurs)
+// Insertion Séparateurs
 void insererS(char entite[], char code[]) {
     if (rechercheS(entite) == -1) {
-        if (CpS >= capaciteS) {
-            agrandirS();  // Agrandir si la capacité est atteinte
+        SMNode* nouv = (SMNode*)malloc(sizeof(SMNode));
+        strcpy(nouv->NomEntite, entite);
+        strcpy(nouv->CodeEntite, code);
+        nouv->suivant = separateursHead;
+        separateursHead = nouv;
+    }
+}
+
+// Recherche TS (retourne 1 si trouvé, -1 sinon)
+int rechercheTS(char entite[]) {
+    TSNode* courant = tsHead;
+    while (courant != NULL) {
+        if (strcmp(courant->NomEntite, entite) == 0)
+            return 1;
+        courant = courant->suivant;
+    }
+    return -1;
+}
+
+// Recherche Mots-clés
+int rechercheM(char entite[]) {
+    SMNode* courant = motsClesHead;
+    while (courant != NULL) {
+        if (strcmp(courant->NomEntite, entite) == 0)
+            return 1;
+        courant = courant->suivant;
+    }
+    return -1;
+}
+
+// Recherche Séparateurs
+int rechercheS(char entite[]) {
+    SMNode* courant = separateursHead;
+    while (courant != NULL) {
+        if (strcmp(courant->NomEntite, entite) == 0)
+            return 1;
+        courant = courant->suivant;
+    }
+    return -1;
+}
+
+// RechercheType
+int rechercheType(char entite[]) {
+    TSNode* courant = tsHead;
+    while (courant != NULL) {
+        if (strcmp(courant->NomEntite, entite) == 0) {
+            return strcmp(courant->TypeEntite, "") == 0 ? 0 : 1;
         }
-        strcpy(tabS[CpS].NomEntite, entite);
-        strcpy(tabS[CpS].CodeEntite, code);
-        CpS++;
-        
+        courant = courant->suivant;
+    }
+    return -1;
+}
+
+// Insertion type
+void insererType(char entite[], char type[]) {
+    TSNode* courant = tsHead;
+    while (courant != NULL) {
+        if (strcmp(courant->NomEntite, entite) == 0) {
+            strcpy(courant->TypeEntite, type);
+            printf("le type de %s est %s\n", entite, type);
+            return;
+        }
+        courant = courant->suivant;
     }
 }
 
-// fonction qui insère le type d'une etité une fois il va être reconnu dans la syntaxe 
-void insererType(char entite[], char type[])
-{
-   int posEntite=rechercheTS(entite);  
-   int statutDeclaration = rechercheType(entite);
-    if (posEntite!=-1) // si l'entité existe dans la TS
-    { 
-        strcpy(ts[posEntite].TypeEntite,type);
-        //printf("lentite est %s, son type est %s\n",ts[posEntite].NomEntite,ts[posEntite].TypeEntite);
+float obtenirValeurFloat(char* idf);
+int obtenirValeurInt(char* idf);
+
+float getValeur(char* idf) {
+    TSNode* courant = tsHead;
+    while (courant != NULL) {
+        if (strcmp(courant->NomEntite, idf) == 0) {
+            if (strcmp(courant->TypeEntite, "int") == 0)
+                return (float)obtenirValeurInt(idf);
+            else if (strcmp(courant->TypeEntite, "float") == 0)
+                return obtenirValeurFloat(idf);
+            else
+                return 0.0f;
+        }
+        courant = courant->suivant;
     }
+    printf("Erreur sémantique : Variable '%s' non déclarée\n", idf);
+    return 0.0f;
 }
 
-// Fonction RechercheType : retourne le type de l'entité
-int rechercheType(char entite[])
-{
-    int posEntite = rechercheTS(entite);
-    if (posEntite == -1) return -1; 
-
-    if (strcmp(ts[posEntite].TypeEntite, "") == 0) 
-        return 0; // L'entité n'est pas encore déclarée
-    else 
-        return 1; // L'entité est déclarée
+int variable_declaree(char *var) {
+    return rechercheType(var);
 }
 
-float obtenirValeurFloat(char* idf);  // Déclaration explicite
- int obtenirValeurInt(char* idf);     // Pour cohérence
- 
- float getValeur(char* idf) {
-     int pos = rechercheTS(idf);
-     if (pos != -1) {
-         if (strcmp(ts[pos].TypeEntite, "int") == 0) {
-             return (float)obtenirValeurInt(idf);
-         } else if (strcmp(ts[pos].TypeEntite, "float") == 0) {
-             return obtenirValeurFloat(idf);
-         } else {
-             return 0.0f;
-         }
-     } else {
-         printf("Erreur sémantique : Variable '%s' non déclarée\n", idf);
-         return 0.0f;
-     }
- }
- 
- int variable_declaree(char *var) {
-     return rechercheType(var); // Vérifie si la variable est présente dans la table des symboles
- }
- 
- 
- int obtenirValeurInt(char* idf) {
-     int pos = rechercheTS(idf);
-     if (pos != -1) {
-         if (strcmp(ts[pos].TypeEntite, "int") == 0) {
-             if (ts[pos].estInitialise) {
-                 return ts[pos].valeur.valeurInt;
-             } else {
-                 printf("Erreur : la variable entière '%s' n'est pas initialisée.\n", idf);
-                 exit(EXIT_FAILURE);
-             }
-         } else {
-             printf("Erreur : la variable '%s' n'est pas de type entier.\n", idf);
-             exit(EXIT_FAILURE);
-         }
-     } else {
-         printf("Erreur : variable '%s' non déclarée.\n", idf);
-         exit(EXIT_FAILURE);
-     }
- }
- 
- 
- 
- float obtenirValeurFloat(char* idf) {
-     int pos = rechercheTS(idf);
-     if (pos != -1) {
-         if (strcmp(ts[pos].TypeEntite, "float") == 0) {
-             if (ts[pos].estInitialise) {
-                 return ts[pos].valeur.valeurFloat;
-             } else {
-                 printf("Erreur : la variable flottante '%s' n'est pas initialisée.\n", idf);
-                 exit(EXIT_FAILURE);
-             }
-         } else {
-             printf("Erreur : la variable '%s' n'est pas de type flottant.\n", idf);
-             exit(EXIT_FAILURE);
-         }
-     } else {
-         printf("Erreur : variable '%s' non déclarée.\n", idf);
-         exit(EXIT_FAILURE);
-     }
- }
+int obtenirValeurInt(char* idf) {
+    TSNode* courant = tsHead;
+    while (courant != NULL) {
+        if (strcmp(courant->NomEntite, idf) == 0) {
+            if (strcmp(courant->TypeEntite, "int") == 0) {
+                if (courant->estInitialise)
+                    return courant->valeur.valeurInt;
+                else {
+                    printf("Erreur : la variable entière '%s' n'est pas initialisée.\n", idf);
+                    exit(EXIT_FAILURE);
+                }
+            } else {
+                printf("Erreur : la variable '%s' n'est pas de type entier.\n", idf);
+                exit(EXIT_FAILURE);
+            }
+        }
+        courant = courant->suivant;
+    }
+    printf("Erreur : variable '%s' non déclarée.\n", idf);
+    exit(EXIT_FAILURE);
+}
 
-// Fonction d'affichage de la TS
+float obtenirValeurFloat(char* idf) {
+    TSNode* courant = tsHead;
+    while (courant != NULL) {
+        if (strcmp(courant->NomEntite, idf) == 0) {
+            if (strcmp(courant->TypeEntite, "float") == 0) {
+                if (courant->estInitialise)
+                    return courant->valeur.valeurFloat;
+                else {
+                    printf("Erreur : la variable flottante '%s' n'est pas initialisée.\n", idf);
+                    exit(EXIT_FAILURE);
+                }
+            } else {
+                printf("Erreur : la variable '%s' n'est pas de type flottant.\n", idf);
+                exit(EXIT_FAILURE);
+            }
+        }
+        courant = courant->suivant;
+    }
+    printf("Erreur : variable '%s' non déclarée.\n", idf);
+    exit(EXIT_FAILURE);
+}
+
+// Fonctions récursives pour l'affichage inversé
+void afficherTSRecursif(TSNode* node) {
+    if (node == NULL) return;
+    afficherTSRecursif(node->suivant);
+    printf("\t|%10s |%12s |%12s |\n", node->NomEntite, node->CodeEntite, node->TypeEntite);
+}
+
+void afficherMRecursif(SMNode* node) {
+    if (node == NULL) return;
+    afficherMRecursif(node->suivant);
+    printf("\t|%10s |%12s  |\n", node->NomEntite, node->CodeEntite);
+}
+
+void afficherSRecursif(SMNode* node) {
+    if (node == NULL) return;
+    afficherSRecursif(node->suivant);
+    printf("\t|%10s |%12s  |\n", node->NomEntite, node->CodeEntite);
+}
+
+// Affichage TS
 void afficherTS() {
     printf("\n/*************** Table des symboles (TS) ******************/\n");
     printf("_________________________________________________\n");
-    printf("\t| NomEntite |  CodeEntite  | TypeEntite | \n");
+    printf("\t| NomEntite |  CodeEntite  | TypeEntite |\n");
     printf("_________________________________________________\n");
-    int i = 0;
-    while (i < CpTS)
-    {
-      printf("\t|%10s |%12s |%12s |\n", ts[i].NomEntite, ts[i].CodeEntite, ts[i].TypeEntite);
-      i++;
-    }
+    afficherTSRecursif(tsHead);
 }
 
-// Fonction d'affichage de tabM (Mots-clés)
+// Affichage Mots-clés
 void afficherM() {
     printf("\n/*************** Table des mots-clés ******************/\n");
     printf("____________________________________\n");
-    printf("\t| NomEntite |  CodeEntite  | \n");
+    printf("\t| NomEntite |  CodeEntite  |\n");
     printf("____________________________________\n");
-    int i = 0;
-    while (i < CpM)
-    {
-      printf("\t|%10s |%12s  |\n", tabM[i].NomEntite, tabM[i].CodeEntite);
-      i++;
-    }
+    afficherMRecursif(motsClesHead);
 }
 
-// Fonction d'affichage de tabS (Séparateurs)
+// Affichage Séparateurs
 void afficherS() {
     printf("\n/*************** Table des séparateurs ******************/\n");
     printf("____________________________________\n");
-    printf("\t| NomEntite |  CodeEntite  | \n");
+    printf("\t| NomEntite |  CodeEntite  |\n");
     printf("____________________________________\n");
-    int i = 0;
-    while (i < CpS)
-    {
-      printf("\t|%10s |%12s  |\n", tabS[i].NomEntite, tabS[i].CodeEntite);
-      i++;
-    }
-}
-void libererMemoire() {
-    free(ts);
-    free(tabM);
-    free(tabS);
+    afficherSRecursif(separateursHead);
 }
 
+// Libération mémoire
+void libererMemoire() {
+    TSNode* tmp;
+    while (tsHead) {
+        tmp = tsHead;
+        tsHead = tsHead->suivant;
+        free(tmp);
+    }
+
+    while (motsClesHead) {
+        tmp = (TSNode*)motsClesHead;
+        motsClesHead = motsClesHead->suivant;
+        free(tmp);
+    }
+
+    while (separateursHead) {
+        tmp = (TSNode*)separateursHead;
+        separateursHead = separateursHead->suivant;
+        free(tmp);
+    }
+}
