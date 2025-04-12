@@ -6,9 +6,16 @@ Var
     let x: Float;
     @define Const pi: Float = 3.14 ;
     @define Const pi: Int = 40014 ;
+    @define Const s: Int = 20 ;
+    @define Const F: Float = 45.9 ;
+
+  
+   
 BeginPg
 {
-    i := y + 4 ;
+    s := 19 ;
+    F := 10 ;
+    l := y + 4 ;
     A := x / 0;
       
 }

@@ -6,6 +6,8 @@
     // ajouter le tableau et le compteur
     char liste_idfs[100][20];
     int nb_idfs = 0;
+    extern int estConst(char* idf); 
+
 %}
 
 %start Program
@@ -109,6 +111,7 @@ declaration_constantes:
     ATDEF CONST IDF DEUXPOINT type EGAL valeur_const PVG {
         if (rechercheType($3) == 0) {
             insererType($3, SauvType); 
+            marquerCommeConstante($3); 
         } else {
             printf("Erreur Semantique: double declaration de la constante %s, a la ligne %d\n", $3, nb_ligne);
         }
@@ -136,12 +139,22 @@ affectation : IDF AFFECTATION expression {
                                            if (!variable_declaree($1)) {
                                           printf("Erreur semantique : Variable '%s' non declaree a la ligne %d\n", $1, nb_ligne);
          
-     }
-                                           if (rechercheType($1) == 0) printf("Erreur semantique: %s non declare a la ligne %d\n", $1, nb_ligne);
+                                              }else if (estConst($1)) {
+                                          printf("Erreur semantique : Tentative de modification de la constante '%s' à la ligne %d\n", $1, nb_ligne);
+                                           }
+                                           if (rechercheType($1) == 0){ 
+                                            printf("Erreur semantique: %s non declare a la ligne %d\n", $1, nb_ligne);
+
+                                            } 
+                                            
+
                                          }
             | IDF CROCHETOUVERT expression CROCHETFERME AFFECTATION expression
                                   {
-                                   if (rechercheType($1) == 0) printf("Erreur semantique: %s non declare a la ligne %d\n", $1, nb_ligne);
+                                   if (rechercheType($1) == 0) {printf("Erreur semantique: %s non declare a la ligne %d\n", $1, nb_ligne);}
+                                   if (estConst($1)) {
+                                          printf("Erreur semantique : Tentative de modification de la constante '%s' à la ligne %d\n", $1, nb_ligne);
+                                           }
                                   }
             ;
 

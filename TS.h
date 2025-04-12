@@ -12,6 +12,7 @@ typedef struct TSNode {
         float valeurFloat;
     } valeur;
     int estInitialise;
+   int estConstante;
     struct TSNode* suivant;
 } TSNode;
 
@@ -34,6 +35,7 @@ void insererTS(char entite[], char code[]) {
         strcpy(nouv->CodeEntite, code);
         strcpy(nouv->TypeEntite, "");
         nouv->estInitialise = 0;
+        nouv->estConstante = 0;
         nouv->suivant = tsHead;
         tsHead = nouv;
     }
@@ -113,6 +115,31 @@ void insererType(char entite[], char type[]) {
         if (strcmp(courant->NomEntite, entite) == 0) {
             strcpy(courant->TypeEntite, type);
             printf("le type de %s est %s\n", entite, type);
+            return;
+        }
+        courant = courant->suivant;
+    }
+}
+
+
+
+int estConst(char* idf) {
+    TSNode* courant = tsHead;
+    while (courant != NULL) {
+        if (strcmp(courant->NomEntite, idf) == 0) {
+
+            return courant->estConstante;
+        }
+        courant = courant->suivant;
+    }
+    return 0;
+}
+
+void marquerCommeConstante(char* entite) {
+    TSNode* courant = tsHead;
+    while (courant != NULL) {
+        if (strcmp(courant->NomEntite, entite) == 0) {
+            courant->estConstante = 1;  // Marque comme constante
             return;
         }
         courant = courant->suivant;
