@@ -153,11 +153,11 @@ affectation : IDF AFFECTATION expression {
                                              strcpy(currentVarType, obtenirTypeVariable($1));
             
                                        // Conversion autorisée : int -> float
-                                     if (strcmp(currentVarType, "float") == 0 && strcmp(currentExprType, "int") == 0) {
+                                     if (strcmp(currentVarType, "Float") == 0 && strcmp(currentExprType, "Int") == 0) {
                                       // Conversion implicite autorisée
                                      }
                                  // Conversion interdite : float -> int
-                                else if (strcmp(currentVarType, "int") == 0 && strcmp(currentExprType, "float") == 0) {
+                                else if (strcmp(currentVarType, "Int") == 0 && strcmp(currentExprType, "Float") == 0) {
                                printf("Erreur semantique (ligne %d): Conversion float->int impossible pour '%s'\n", 
                                    nb_ligne, $1);
                                     }
@@ -231,10 +231,10 @@ contenu : CHAINE
 expression : expression PLUS expression {
      $$ = $1 + $3; 
      // Détermination du type résultat
-        if (strcmp(currentExprType, "float") == 0 || strcmp(currentExprType + 2, "float") == 0)
-            strcpy(currentExprType, "float");
+        if (strcmp(currentExprType, "Float") == 0 || strcmp(currentExprType + 2, "Float") == 0)
+            strcpy(currentExprType, "Float");
         else
-            strcpy(currentExprType, "int");
+            strcpy(currentExprType, "Int");
 }
             | expression MINUS expression { $$ = $1 - $3; }
             | expression TIMES expression { $$ = $1 * $3; }
@@ -256,11 +256,11 @@ expression : expression PLUS expression {
             | ENTIERSIGNE { $$ = $1; 
             }
             | FLOAT { $$ = $1; 
-                       strcpy(currentExprType, "float");
+                       strcpy(currentExprType, "Float");
                      
             }
             | ENTIER { $$ = $1; 
-                    strcpy(currentExprType, "int");
+                    strcpy(currentExprType, "Int");
             }
             ;
 %%
