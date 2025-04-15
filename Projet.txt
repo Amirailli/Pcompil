@@ -1,25 +1,34 @@
-MainPrgm Test;
+MainPrgm L3_software ;
 Var
     let b : Float;
     let A : Int;
-    let x,y,K: Int;
-    let x: Float;
+    let x,y: Int;
     @define Const pi: Float = 3.14 ;
-    @define Const pi: Int = 40014 ;
-    @define Const s: Int = 20 ;
-    @define Const F: Float = 45.9 ;
-  
-
-
-  
-   
+    let w,q : [Int ; 5];
 BeginPg
-{
-    s := 19 ;
-    F := 10 ;
-    K := 85.19 ;
-    l := y + 4 ;
-    A := x / 0;
+{  
+    A:= 3;
+    {-- 
+      Ceci est un commentaire sur  
+      Plusieurs lignes  
+    --} 
+    <!- Ceci est un commentaire sur une seule ligne -!> 
+    input(UserName) ; 
+    output("Vous avez saisi: ", UserName) ; 
+    do { 
+    x :=x + 1; 
+    } while (x<100); 
+    for A from 1 to 10 step 2 {   
+      y := y * A; 
+    } 
+    if (A + 2 > y) then 
+    { 
+       x := x - 5; 
+    } else { 
+       x := x - 1 ; 
+    }
+    w[5] := (x + 2) / (5 - b + (-3)) ; 
+    
       
 }
 EndPg;

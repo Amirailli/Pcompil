@@ -106,7 +106,17 @@ liste_idf:
 
 
 declaration_tableau:
-    LET liste_idf  DEUXPOINT CROCHETOUVERT ENTIER CROCHETFERME DEUXPOINT type PVG
+    LET liste_idf DEUXPOINT CROCHETOUVERT type PVG ENTIER CROCHETFERME PVG
+    {  int i;
+      for (i = 0; i < nb_idfs; i++) {
+        if (rechercheType(liste_idfs[i]) == 0) {
+            insererType(liste_idfs[i], SauvType);
+        } else {
+            printf("Erreur Semantique: double declaration de %s, ligne %d\n", liste_idfs[i], nb_ligne);
+        }
+      }
+      nb_idfs = 0; // reset la liste temporaire
+    }
 ;
 
 declaration_constantes:
@@ -179,9 +189,7 @@ affectation : IDF AFFECTATION expression {
                                   }
             ;
 
-condition : IF PARENTHESEOUVERT expression_logique PARENTHESEFERME THEN
-            OUVEREBLOC instructions FERMETBLOC 
-            | IF PARENTHESEOUVERT expression_logique PARENTHESEFERME THEN 
+condition : IF PARENTHESEOUVERT expression_logique PARENTHESEFERME THEN 
             OUVEREBLOC instructions FERMETBLOC ELSE OUVEREBLOC instructions FERMETBLOC
             ;
 expression_logique : expression comparaison expression
@@ -189,7 +197,7 @@ expression_logique : expression comparaison expression
                    | expression_logique OR expression_logique
                    | NOT expression_logique
                    | PARENTHESEOUVERT expression_logique PARENTHESEFERME
-                   | expression  // Permet d'accepter directement un booléen (0 ou 1)
+                   | expression  
                    ;
 
 comparaison : EQ 
@@ -204,7 +212,7 @@ boucle : boucle_do
        | boucle_for
        ;
 
-boucle_do : DO OUVEREBLOC instructions FERMETBLOC WHILE PARENTHESEOUVERT expression comparaison expression PARENTHESEFERME PVG
+boucle_do : DO OUVEREBLOC instructions FERMETBLOC WHILE PARENTHESEOUVERT expression_logique PARENTHESEFERME PVG
           ;
 
 boucle_for : FOR IDF FROM expression TO expression STEP expression 
@@ -221,10 +229,7 @@ input : INPUT PARENTHESEOUVERT VAR_IDF PARENTHESEFERME
 output : OUTPUT PARENTHESEOUVERT contenu PARENTHESEFERME
        ;
 
-contenu : CHAINE
-        | VAR_IDF
-        | IDF
-        | CHAINE VRG VAR_IDF
+contenu : CHAINE VRG VAR_IDF
         | CHAINE VRG IDF
         ;
 

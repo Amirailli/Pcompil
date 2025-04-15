@@ -17,10 +17,11 @@
 lettreMaj [A-Z]
 lettre [a-z]
 chiffre [0-9]
-entier_signe \([+-]?{chiffre}+)\
+entier  {chiffre}+
+entier_signe \([+-]{entier})\
 
 flottant {chiffre}+.{chiffre}+
-flottant_signe \([+-]?{chiffre}+.{chiffre}+)\
+flottant_signe \([+-]{chiffre}+.{chiffre}+)\
 
 IDF [a-zA-Z]({lettre}|{chiffre}|_)*
 ERREUR_NUM_IDENT {chiffre}+({lettre}|{chiffre}|_)*
@@ -29,7 +30,7 @@ ERREUR_UNDERS_IDENT _({lettre}|{chiffre}|_)*
 %%
 
 \{--(.|\n)*?--\}  
-"<!-"([^-]|-[^!])*"-!>" 
+"<!-"(.|\n)*?"-!>" 
 
 "MainPrgm"      { printf("Mot-cle detecte : MainPrgm\n"); insererM(yytext, "MAINPRGM"); nb_colonne += yyleng; return MAINPRGM; }
 "Var"           { printf("Mot-cle detecte : Var\n"); insererM(yytext, "VAR"); nb_colonne += yyleng; return VAR; }
@@ -44,26 +45,27 @@ ERREUR_UNDERS_IDENT _({lettre}|{chiffre}|_)*
 "Int"      { printf("Type Int detecte : %s\n", yytext); insererM(yytext, "TYPEINT");yylval.str=strdup(yytext); nb_colonne += yyleng; return TYPEINT; }
 "Float"     { printf("Type Float detecte : %s\n", yytext); insererM(yytext, "TYPEFLOAT");yylval.str=strdup(yytext); nb_colonne += yyleng; return TYPEFLOAT; }
 
-{chiffre}+  { 
+{entier}  { 
                 yylval.entier = atoi(yytext); 
                 if (yylval.entier < -32768 || yylval.entier > 32767) 
                     afficher_erreur("Valeur entiere hors limite", yytext, "Nombre trop grand ou trop petit");
                 else 
                    printf("Entier : %s\n", yytext);
-                   insererTS(yytext, "ENTIER");
                 nb_colonne += yyleng;
                 return ENTIER;
             }
 
 {entier_signe} { 
-                    yylval.entier = atoi(yytext);
+                    char copie[100];
+                    strncpy(copie, yytext + 1, yyleng - 2);
+                    copie[yyleng - 2] = '\0';
+                    yylval.entier = atoi(copie);
                     if (yylval.entier < -32768 || yylval.entier > 32767) 
                         afficher_erreur("Valeur entiere hors limite", yytext, "Nombre trop grand ou trop petit");
                     else 
                         printf("Entier signe : %s\n", yytext);
                 
                     nb_colonne += yyleng;
-                    insererTS(yytext, "ENTIERSIGNE");
                     return ENTIERSIGNE;
                 } 
 
@@ -78,19 +80,19 @@ ERREUR_UNDERS_IDENT _({lettre}|{chiffre}|_)*
     return ENTIERERROR;
 }
 
-{flottant}   { printf("float non signe %s\n", yytext);nb_colonne += yyleng;yylval.flottant = atof(yytext);  insererTS(yytext, "FLOAT"); return FLOAT; }
+{flottant}   { printf("float non signe %s\n", yytext);nb_colonne += yyleng;yylval.flottant = atof(yytext); return FLOAT; }
 
-{flottant_signe} { printf("float signe %s\n", yytext); yylval.flottant = atof(yytext);  insererTS(yytext, "FLOAT");nb_colonne += yyleng; return FLOAT;  }
+{flottant_signe} { printf("float signe %s\n", yytext); yylval.flottant = atof(yytext); nb_colonne += yyleng; return FLOAT;  }
 
-"if"      { printf("Mot-cle : %s\n", yytext); insererTS(yytext, "IF"); nb_colonne += yyleng;return IF;}
-"then"    { printf("Mot-cle : %s\n", yytext);insererTS(yytext, "THEN"); nb_colonne += yyleng;return THEN ;}
-"else"    { printf("Mot-cle : %s\n", yytext); insererTS(yytext,"ELSE");nb_colonne += yyleng;return ELSE ;}
-"do"      { printf("Mot-cle : %s\n", yytext);insererTS(yytext, "DO"); nb_colonne += yyleng;return DO;}
-"while"   { printf("Mot-cle : %s\n", yytext);insererTS(yytext, "WHILE"); nb_colonne += yyleng;return WHILE ;}
-"for"     { printf("Mot-cle : %s\n", yytext); insererTS(yytext, "FOR");nb_colonne += yyleng;return FOR;}
-"from"    { printf("Mot-cle : %s\n", yytext); insererTS(yytext, "FROM");nb_colonne += yyleng;return FROM;}
-"to"      { printf("Mot-cle : %s\n", yytext); insererTS(yytext, "TO");nb_colonne += yyleng;return TO;}
-"step"    { printf("Mot-cle : %s\n", yytext); insererTS(yytext, "STEP");nb_colonne += yyleng;return STEP;}
+"if"      { printf("Mot-cle : %s\n", yytext); insererM(yytext, "IF"); nb_colonne += yyleng;return IF;}
+"then"    { printf("Mot-cle : %s\n", yytext);insererM(yytext, "THEN"); nb_colonne += yyleng;return THEN ;}
+"else"    { printf("Mot-cle : %s\n", yytext); insererM(yytext,"ELSE");nb_colonne += yyleng;return ELSE ;}
+"do"      { printf("Mot-cle : %s\n", yytext);insererM(yytext, "DO"); nb_colonne += yyleng;return DO;}
+"while"   { printf("Mot-cle : %s\n", yytext);insererM(yytext, "WHILE"); nb_colonne += yyleng;return WHILE ;}
+"for"     { printf("Mot-cle : %s\n", yytext); insererM(yytext, "FOR");nb_colonne += yyleng;return FOR;}
+"from"    { printf("Mot-cle : %s\n", yytext); insererM(yytext, "FROM");nb_colonne += yyleng;return FROM;}
+"to"      { printf("Mot-cle : %s\n", yytext); insererM(yytext, "TO");nb_colonne += yyleng;return TO;}
+"step"    { printf("Mot-cle : %s\n", yytext); insererM(yytext, "STEP");nb_colonne += yyleng;return STEP;}
 
 {ERREUR_NUM_IDENT}  { afficher_erreur("Identificateur invalide", yytext, "Un IDF ne peut pas commencer par un chiffre"); 
                       nb_colonne += yyleng;
