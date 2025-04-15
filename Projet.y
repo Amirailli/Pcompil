@@ -7,6 +7,8 @@
     char liste_idfs[100][20];
     int nb_idfs = 0;
     extern int estConst(char* idf); 
+    char currentVarType[20];   // Type de la variable en cours d'affectation
+    char currentExprType[20];  // Type de l'expression courante
 
 %}
 
@@ -145,7 +147,26 @@ affectation : IDF AFFECTATION expression {
                                            if (rechercheType($1) == 0){ 
                                             printf("Erreur semantique: %s non declare a la ligne %d\n", $1, nb_ligne);
 
-                                            } 
+                                            }
+                                            // Vérification type
+                                            else {
+                                             strcpy(currentVarType, obtenirTypeVariable($1));
+            
+                                       // Conversion autorisée : int -> float
+                                     if (strcmp(currentVarType, "float") == 0 && strcmp(currentExprType, "int") == 0) {
+                                      // Conversion implicite autorisée
+                                     }
+                                 // Conversion interdite : float -> int
+                                else if (strcmp(currentVarType, "int") == 0 && strcmp(currentExprType, "float") == 0) {
+                               printf("Erreur semantique (ligne %d): Conversion float->int impossible pour '%s'\n", 
+                                   nb_ligne, $1);
+                                    }
+                                  // Types différents
+                               else if (strcmp(currentVarType, currentExprType) != 0) {
+                              printf("Erreur semantique (ligne %d): Types incompatibles (%s vs %s) pour '%s'\n",
+                                    nb_ligne, currentVarType, currentExprType, $1);
+                                         }
+                                           }
                                             
 
                                          }
@@ -207,7 +228,14 @@ contenu : CHAINE
         | CHAINE VRG IDF
         ;
 
-expression : expression PLUS expression { $$ = $1 + $3; }
+expression : expression PLUS expression {
+     $$ = $1 + $3; 
+     // Détermination du type résultat
+        if (strcmp(currentExprType, "float") == 0 || strcmp(currentExprType + 2, "float") == 0)
+            strcpy(currentExprType, "float");
+        else
+            strcpy(currentExprType, "int");
+}
             | expression MINUS expression { $$ = $1 - $3; }
             | expression TIMES expression { $$ = $1 * $3; }
             | expression DIV expression {
@@ -219,10 +247,21 @@ expression : expression PLUS expression { $$ = $1 + $3; }
                   }
               }
             | PARENTHESEOUVERT expression PARENTHESEFERME { $$ = $2; }
-            | IDF { $$ = getValeur($1); }
-            | ENTIERSIGNE { $$ = $1; }
-            | FLOAT { $$ = $1; }
-            | ENTIER { $$ = $1; }
+            | IDF { $$ = getValeur($1);
+                    if (rechercheType($1) != 0)
+            strcpy(currentExprType, obtenirTypeVariable($1));
+        else
+            strcpy(currentExprType, "erreur");
+            }
+            | ENTIERSIGNE { $$ = $1; 
+            }
+            | FLOAT { $$ = $1; 
+                       strcpy(currentExprType, "float");
+                     
+            }
+            | ENTIER { $$ = $1; 
+                    strcpy(currentExprType, "int");
+            }
             ;
 %%
 

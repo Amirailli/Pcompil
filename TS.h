@@ -97,6 +97,7 @@ int rechercheS(char entite[]) {
 }
 
 // RechercheType
+
 int rechercheType(char entite[]) {
     TSNode* courant = tsHead;
     while (courant != NULL) {
@@ -106,6 +107,17 @@ int rechercheType(char entite[]) {
         courant = courant->suivant;
     }
     return -1;
+}
+//  fonction pour obtenir le type
+const char* obtenirTypeVariable(char* entite) {
+    TSNode* courant = tsHead;
+    while (courant != NULL) {
+        if (strcmp(courant->NomEntite, entite) == 0) {
+            return courant->TypeEntite;
+        }
+        courant = courant->suivant;
+    }
+    return "non_declare";
 }
 
 // Insertion type

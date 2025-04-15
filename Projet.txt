@@ -2,12 +2,14 @@ MainPrgm Test;
 Var
     let b : Float;
     let A : Int;
-    let x,y: Int;
+    let x,y,K: Int;
     let x: Float;
     @define Const pi: Float = 3.14 ;
     @define Const pi: Int = 40014 ;
     @define Const s: Int = 20 ;
     @define Const F: Float = 45.9 ;
+  
+
 
   
    
@@ -15,6 +17,7 @@ BeginPg
 {
     s := 19 ;
     F := 10 ;
+    K := 85.19 ;
     l := y + 4 ;
     A := x / 0;
       
