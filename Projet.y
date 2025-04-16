@@ -106,7 +106,7 @@ liste_idf:
 
 
 declaration_tableau:
-    LET liste_idf DEUXPOINT CROCHETOUVERT type PVG ENTIER CROCHETFERME PVG
+    LET liste_idf DEUXPOINT CROCHETOUVERT TYPEINT PVG ENTIER CROCHETFERME PVG
     {  int i;
       for (i = 0; i < nb_idfs; i++) {
         if (rechercheType(liste_idfs[i]) == 0) {
@@ -116,6 +116,7 @@ declaration_tableau:
         }
       }
       nb_idfs = 0; // reset la liste temporaire
+      if($7 <= 0){printf("ERROR,Taille du tableau = %d\n", $7)}
     }
 ;
 
@@ -171,11 +172,7 @@ affectation : IDF AFFECTATION expression {
                                printf("Erreur semantique (ligne %d): Conversion float->int impossible pour '%s'\n", 
                                    nb_ligne, $1);
                                     }
-                                  // Types différents
-                               else if (strcmp(currentVarType, currentExprType) != 0) {
-                              printf("Erreur semantique (ligne %d): Types incompatibles (%s vs %s) pour '%s'\n",
-                                    nb_ligne, currentVarType, currentExprType, $1);
-                                         }
+                                
                                            }
                                             
 

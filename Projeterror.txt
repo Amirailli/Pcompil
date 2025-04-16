@@ -8,6 +8,7 @@ Var
     @define Const pi: Int = 40014 ;
     @define Const s: Int = 20 ;
     @define Const F: Float = 45.9 ;  
+    let w : [Int ; 0];
 BeginPg
 {
     s := 19 ;

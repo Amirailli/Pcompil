@@ -7,7 +7,7 @@ Var
     let w,q : [Int ; 5];
 BeginPg
 {  
-    A:= 3;
+    A := 3;
     {-- 
       Ceci est un commentaire sur  
       Plusieurs lignes  
