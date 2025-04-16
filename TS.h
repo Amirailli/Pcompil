@@ -37,7 +37,6 @@ void insererTS(char entite[], char code[]) {
         strcpy(nouv->NomEntite, entite);
         strcpy(nouv->CodeEntite, code);
         strcpy(nouv->TypeEntite, "");
-        strcpy(nouv->valEntitie, "");
         nouv->estInitialise = 0;
         nouv->estConstante = 0;
         nouv->suivant = tsHead;
