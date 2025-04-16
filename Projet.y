@@ -171,7 +171,7 @@ affectation : IDF AFFECTATION expression {
                                      }
                                  // Conversion interdite : float -> int
                                 else if (strcmp(currentVarType, "Int") == 0 && strcmp(currentExprType, "Float") == 0) {
-                               printf("Erreur semantique (ligne %d): Conversion float->int impossible pour '%s'\n", 
+                               printf("Erreur semantique non compatibilite du type (ligne %d): Conversion float->int impossible pour '%s'\n", 
                                    nb_ligne, $1);
                                     }
                                 
