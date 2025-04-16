@@ -107,7 +107,8 @@ liste_idf:
 
 declaration_tableau:
     LET liste_idf DEUXPOINT CROCHETOUVERT TYPEINT PVG ENTIER CROCHETFERME PVG
-    {  int i;
+    {  
+        int i;
       for (i = 0; i < nb_idfs; i++) {
         if (rechercheType(liste_idfs[i]) == 0) {
             insererType(liste_idfs[i], SauvType);
@@ -115,8 +116,8 @@ declaration_tableau:
             printf("Erreur Semantique: double declaration de %s, ligne %d\n", liste_idfs[i], nb_ligne);
         }
       }
-      nb_idfs = 0; // reset la liste temporaire
-      if($7 <= 0){printf("ERROR,Taille du tableau = %d\n", $7)}
+      nb_idfs = 0; 
+      if($7 <= 0){printf("ERROR,Taille du tableau = %d\n", $7);}
     }
 ;
 
@@ -149,6 +150,7 @@ instruction : affectation PVG
             ;
 
 affectation : IDF AFFECTATION expression {
+                                          printf("la valeur est %f\n" , $3);
                                            if (!variable_declaree($1)) {
                                           printf("Erreur semantique : Variable '%s' non declaree a la ligne %d\n", $1, nb_ligne);
          

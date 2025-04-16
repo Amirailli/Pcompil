@@ -509,11 +509,11 @@ static const yytype_int8 yyrhs[] =
 static const yytype_uint16 yyrline[] =
 {
        0,    58,    58,    62,    66,    67,    71,    72,    73,    77,
-      92,    93,    97,   101,   109,   124,   135,   136,   137,   140,
-     141,   144,   145,   146,   147,   148,   151,   180,   189,   192,
-     193,   194,   195,   196,   197,   200,   201,   202,   203,   204,
-     205,   208,   209,   212,   215,   223,   226,   229,   230,   233,
-     241,   242,   243,   251,   252,   258,   260,   264
+      92,    93,    97,   101,   109,   125,   136,   137,   138,   141,
+     142,   145,   146,   147,   148,   149,   152,   196,   205,   208,
+     209,   210,   211,   212,   213,   216,   217,   218,   219,   220,
+     221,   224,   225,   228,   231,   239,   242,   245,   246,   249,
+     257,   258,   259,   267,   268,   274,   276,   280
 };
 #endif
 
@@ -1574,7 +1574,8 @@ yyreduce:
 
 /* Line 1455 of yacc.c  */
 #line 110 "Projet.y"
-    {  int i;
+    {  
+        int i;
       for (i = 0; i < nb_idfs; i++) {
         if (rechercheType(liste_idfs[i]) == 0) {
             insererType(liste_idfs[i], SauvType);
@@ -1582,15 +1583,15 @@ yyreduce:
             printf("Erreur Semantique: double declaration de %s, ligne %d\n", liste_idfs[i], nb_ligne);
         }
       }
-      nb_idfs = 0; // reset la liste temporaire
-      if((yyvsp[(7) - (9)].entier) <= 0){printf("ERROR,Taille du tableau = %d\n", (yyvsp[(7) - (9)].entier))}
+      nb_idfs = 0; 
+      if((yyvsp[(7) - (9)].entier) <= 0){printf("ERROR,Taille du tableau = %d\n", (yyvsp[(7) - (9)].entier));}
     ;}
     break;
 
   case 15:
 
 /* Line 1455 of yacc.c  */
-#line 124 "Projet.y"
+#line 125 "Projet.y"
     {
         if (rechercheType((yyvsp[(3) - (8)].str)) == 0) {
             insererType((yyvsp[(3) - (8)].str), SauvType); 
@@ -1604,8 +1605,9 @@ yyreduce:
   case 26:
 
 /* Line 1455 of yacc.c  */
-#line 151 "Projet.y"
+#line 152 "Projet.y"
     {
+                                          printf("la valeur est %f\n" , (yyvsp[(3) - (3)].flottant));
                                            if (!variable_declaree((yyvsp[(1) - (3)].str))) {
                                           printf("Erreur semantique : Variable '%s' non declaree a la ligne %d\n", (yyvsp[(1) - (3)].str), nb_ligne);
          
@@ -1629,7 +1631,21 @@ yyreduce:
                                printf("Erreur semantique (ligne %d): Conversion float->int impossible pour '%s'\n", 
                                    nb_ligne, (yyvsp[(1) - (3)].str));
                                     }
-                                
+                                else {
+        // Mise à jour de la valeur dans la TS
+        TSNode* courant = tsHead;
+        while (courant != NULL) {
+            if (strcmp(courant->NomEntite, (yyvsp[(1) - (3)].str)) == 0) {
+                if (strcmp(courant->TypeEntite, "Int") == 0) {
+                    courant->valeur.valeurInt = (int)(yyvsp[(3) - (3)].flottant);
+                } else if (strcmp(courant->TypeEntite, "Float") == 0) {
+                    courant->valeur.valeurFloat = (yyvsp[(3) - (3)].flottant);
+                }
+                courant->estInitialise = 1;
+                break;
+            }
+            courant = courant->suivant;
+        }}
                                            }
                                             
 
@@ -1639,7 +1655,7 @@ yyreduce:
   case 27:
 
 /* Line 1455 of yacc.c  */
-#line 181 "Projet.y"
+#line 197 "Projet.y"
     {
                                    if (rechercheType((yyvsp[(1) - (6)].str)) == 0) {printf("Erreur semantique: %s non declare a la ligne %d\n", (yyvsp[(1) - (6)].str), nb_ligne);}
                                    if (estConst((yyvsp[(1) - (6)].str))) {
@@ -1651,7 +1667,7 @@ yyreduce:
   case 44:
 
 /* Line 1455 of yacc.c  */
-#line 217 "Projet.y"
+#line 233 "Projet.y"
     {
                   if (rechercheType((yyvsp[(2) - (11)].str)) == 0) printf("Erreur semantique: %s non declare a la ligne %d\n", (yyvsp[(2) - (11)].str), nb_ligne);
               ;}
@@ -1660,7 +1676,7 @@ yyreduce:
   case 49:
 
 /* Line 1455 of yacc.c  */
-#line 233 "Projet.y"
+#line 249 "Projet.y"
     {
      (yyval.flottant) = (yyvsp[(1) - (3)].flottant) + (yyvsp[(3) - (3)].flottant); 
      // Détermination du type résultat
@@ -1674,21 +1690,21 @@ yyreduce:
   case 50:
 
 /* Line 1455 of yacc.c  */
-#line 241 "Projet.y"
+#line 257 "Projet.y"
     { (yyval.flottant) = (yyvsp[(1) - (3)].flottant) - (yyvsp[(3) - (3)].flottant); ;}
     break;
 
   case 51:
 
 /* Line 1455 of yacc.c  */
-#line 242 "Projet.y"
+#line 258 "Projet.y"
     { (yyval.flottant) = (yyvsp[(1) - (3)].flottant) * (yyvsp[(3) - (3)].flottant); ;}
     break;
 
   case 52:
 
 /* Line 1455 of yacc.c  */
-#line 243 "Projet.y"
+#line 259 "Projet.y"
     {
                   if ((yyvsp[(3) - (3)].flottant) == 0 ) {
                       printf("Erreur semantique : division par zero a la ligne %d\n" , nb_ligne);
@@ -1702,14 +1718,14 @@ yyreduce:
   case 53:
 
 /* Line 1455 of yacc.c  */
-#line 251 "Projet.y"
+#line 267 "Projet.y"
     { (yyval.flottant) = (yyvsp[(2) - (3)].flottant); ;}
     break;
 
   case 54:
 
 /* Line 1455 of yacc.c  */
-#line 252 "Projet.y"
+#line 268 "Projet.y"
     { (yyval.flottant) = getValeur((yyvsp[(1) - (1)].str));
                     if (rechercheType((yyvsp[(1) - (1)].str)) != 0)
             strcpy(currentExprType, obtenirTypeVariable((yyvsp[(1) - (1)].str)));
@@ -1721,7 +1737,7 @@ yyreduce:
   case 55:
 
 /* Line 1455 of yacc.c  */
-#line 258 "Projet.y"
+#line 274 "Projet.y"
     { (yyval.flottant) = (yyvsp[(1) - (1)].entier); 
             ;}
     break;
@@ -1729,7 +1745,7 @@ yyreduce:
   case 56:
 
 /* Line 1455 of yacc.c  */
-#line 260 "Projet.y"
+#line 276 "Projet.y"
     { (yyval.flottant) = (yyvsp[(1) - (1)].flottant); 
                        strcpy(currentExprType, "Float");
                      
@@ -1739,7 +1755,7 @@ yyreduce:
   case 57:
 
 /* Line 1455 of yacc.c  */
-#line 264 "Projet.y"
+#line 280 "Projet.y"
     { (yyval.flottant) = (yyvsp[(1) - (1)].entier); 
                     strcpy(currentExprType, "Int");
             ;}
@@ -1748,7 +1764,7 @@ yyreduce:
 
 
 /* Line 1455 of yacc.c  */
-#line 1752 "Projet.tab.c"
+#line 1768 "Projet.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1960,7 +1976,7 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
-#line 268 "Projet.y"
+#line 284 "Projet.y"
 
 
 int main() {
