@@ -23,7 +23,7 @@
 
 %token MAINPRGM VAR BEGINPG ENDPG LET ATDEF CONST INPUT OUTPUT
 %token <str> TYPEINT TYPEFLOAT 
-%token <entier> ENTIER ENTIERSIGNE 
+%token <entier> ENTIER ENTIERSIGNE ENTIERERROR
 %token <flottant> FLOAT
 
 %token <str> IDF 
@@ -164,7 +164,7 @@ affectation : IDF AFFECTATION expression {
                                             // Vérification type
                                            else {
                                              strcpy(currentVarType, obtenirTypeVariable($1));
-            
+        
                                              // Conversion autorisée : int -> float
                                             if (strcmp(currentVarType, "Float") == 0 && strcmp(currentExprType, "Int") == 0) {
                                              // Conversion implicite autorisée
@@ -181,9 +181,21 @@ affectation : IDF AFFECTATION expression {
                                                update_value($1, 0, (float)$3); // mise à jour avec une valeur flottante
                                             }
                                             }
+
+                                       // Conversion autorisée : int -> float
+                                     if (strcmp(currentVarType, "Float") == 0 && strcmp(currentExprType, "Int") == 0) {
+                                      // Conversion implicite autorisée
+                                     }
+                                 // Conversion interdite : float -> int
+                                else if (strcmp(currentVarType, "Int") == 0 && strcmp(currentExprType, "Float") == 0) {
+                               printf("Erreur semantique non compatibilite du type (ligne %d): Conversion float->int impossible pour '%s'\n", 
+                                   nb_ligne, $1);
+                                    }
+                                
+                                           }
                                             
 
-                                         }
+                                         
             | IDF CROCHETOUVERT expression CROCHETFERME AFFECTATION expression
                                   {
                                    if (rechercheType($1) == 0) {printf("Erreur semantique: %s non declare a la ligne %d\n", $1, nb_ligne);}
