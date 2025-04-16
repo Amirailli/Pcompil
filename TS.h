@@ -7,15 +7,12 @@ typedef union {
     int valeurInt;
     float valeurFloat;
 } Valeur;
+
 // Structures pour TS (Table des symboles)
 typedef struct TSNode {
     char NomEntite[20];
     char CodeEntite[20];
     char TypeEntite[20];  
-    // union {
-    //     int valeurInt;
-    //     float valeurFloat;
-    // } valeur;
     Valeur valeur;
     int estInitialise;
    int estConstante;
@@ -167,37 +164,23 @@ void marquerCommeConstante(char* entite) {
 float obtenirValeurFloat(char* idf);
 int obtenirValeurInt(char* idf);
 
-// float getValeur(char* idf) {
-//     TSNode* courant = tsHead;
-//     while (courant != NULL) {
-//         if (strcmp(courant->NomEntite, idf) == 0) {
-//             if (strcmp(courant->TypeEntite, "int") == 0)
-//                 return (float)obtenirValeurInt(idf);
-//             else if (strcmp(courant->TypeEntite, "float") == 0)
-//                 return obtenirValeurFloat(idf);
-//             else
-//                 return 0.0f;
-//         }
-//         courant = courant->suivant;
-//     }
-//     printf("Erreur sémantique : Variable '%s' non déclarée\n", idf);
-//     return 0.0f;
-// }
 float getValeur(char* idf) {
     TSNode* courant = tsHead;
     while (courant != NULL) {
         if (strcmp(courant->NomEntite, idf) == 0) {
-            if (strcmp(courant->TypeEntite, "Int") == 0) {
-                return (float)courant->valeur.valeurInt;
-            } else if (strcmp(courant->TypeEntite, "Float") == 0) {
-                return courant->valeur.valeurFloat;
-            }
+            if (strcmp(courant->TypeEntite, "int") == 0)
+                return (float)obtenirValeurInt(idf);
+            else if (strcmp(courant->TypeEntite, "float") == 0)
+                return obtenirValeurFloat(idf);
+            else
+                return 0.0f;
         }
         courant = courant->suivant;
     }
-    printf("Erreur semantique : Variable '%s' non declaree\n", idf);
+    printf("Erreur sémantique : Variable '%s' non déclarée\n", idf);
     return 0.0f;
 }
+
 int variable_declaree(char *var) {
     return rechercheType(var);
 }
@@ -246,162 +229,70 @@ float obtenirValeurFloat(char* idf) {
     exit(EXIT_FAILURE);
 }
 
+TSNode* rechercheTSPtr(char* nomEntite) {
+    TSNode* courant = tsHead; // tsHead est la tête de la table des symboles
+    while (courant != NULL) {
+        if (strcmp(courant->NomEntite, nomEntite) == 0) {
+            return courant; // trouvé !
+        }
+        courant = courant->suivant;
+    }
+    return NULL; // pas trouvé
+}
 
-// TSNode* trouverTS(char* nomEntite) {
-//     TSNode* courant = tsHead;
-//     while (courant != NULL) {
-//         if (strcmp(courant->NomEntite, nomEntite) == 0)
-//             return courant;
-//         courant = courant->suivant;
-//     }
-//     return NULL;
-// }
+void update_value(char* nomEntite, int entier, float flottant) {
+    TSNode* node = rechercheTSPtr(nomEntite);
+    if (node != NULL) {
+        if (strcmp(node->TypeEntite, "int") == 0) {
+            node->valeur.valeurInt = entier;
+            node->estInitialise = 1;
+        } else if (strcmp(node->TypeEntite, "float") == 0) {
+            node->valeur.valeurFloat = flottant;
+            node->estInitialise = 1;
+        }
+    }
+}
 
-// void update_value(char* nomEntite, Valeur valeur) {
-//     TSNode* node = trouverTS(nomEntite);
-//     if (node != NULL) {
-//         if (strcmp(node->TypeEntite, "Int") == 0) {
-//             node->valeur.valeurInt = valeur.valeurInt;
-//         } else if (strcmp(node->TypeEntite, "Float") == 0) {
-//             node->valeur.valeurFloat = valeur.valeurFloat;
-//         }
-//     }
-
-// }
-
-
-// void afficherTS() {
-//     printf("\n/*************** Table des symboles (TS) ******************/\n");
-//     printf("__________________________________________________________________\n");
-//     printf("| %-12s | %-14s | %-12s | %-10s |\n", "NomEntite", "CodeEntite", "TypeEntite", "valEntitie");
-//     printf("__________________________________________________________________\n");
-    
-//     TSNode* current = tsHead;
-//     // Parcours dans l'ordre inverse (pour afficher comme dans l'exemple)
-//     // On va d'abord compter le nombre d'éléments
-//     int count = 0;
-//     int i, j;  // Déclaration des variables de boucle avant (pour compatibilité pre-C99)
-//     TSNode* temp = current;
-//     while (temp != NULL) {
-//         count++;
-//         temp = temp->suivant;
-//     }
-    
-//     // On parcourt en partant de la fin
-//     for (i = count - 1; i >= 0; i--) {
-//         temp = current;
-//         for (j = 0; j < i; j++) {
-//             temp = temp->suivant;
-//         }
-        
-//         char valueStr[20];
-//         if (strcmp(temp->TypeEntite, "int") == 0) {
-//             sprintf(valueStr, "%d", temp->valeur.valeurInt);
-//         } else if (strcmp(temp->TypeEntite, "float") == 0) {
-//             sprintf(valueStr, "%.2f", temp->valeur.valeurFloat);
-//         } else {
-//             strcpy(valueStr, "N/A");
-//         }
-        
-//         printf("| %-12s | %-14s | %-12s | %-10s |\n",
-//                temp->NomEntite,
-//                temp->CodeEntite,
-//                temp->TypeEntite,
-//                valueStr);
-//     }
-//     printf("__________________________________________________________________\n");
-// }
 void afficherTS() {
     printf("\n/*************** Table des symboles (TS) ******************/\n");
     printf("__________________________________________________________________\n");
     printf("| %-12s | %-14s | %-12s | %-10s |\n", "NomEntite", "CodeEntite", "TypeEntite", "valEntitie");
     printf("__________________________________________________________________\n");
+    
+    TSNode* current = tsHead;
 
-    TSNode* courant = tsHead;
-    while (courant != NULL) {
-        char valeurStr[20];
-
-        // Si la variable est de type int ou float et non initialisée
-        if (!courant->estInitialise &&
-            (strcmp(courant->TypeEntite, "int") == 0 || strcmp(courant->TypeEntite, "float") == 0)) {
-
-            printf(">> Entrez la valeur de '%s' (%s) : ", courant->NomEntite, courant->TypeEntite);
-            if (strcmp(courant->TypeEntite, "int") == 0) {
-                int val;
-                scanf("%d", &val);
-                courant->valeur.valeurInt = val;
-            } else {
-                float val;
-                scanf("%f", &val);
-                courant->valeur.valeurFloat = val;
-            }
-            courant->estInitialise = 1;
-        }
-
-        if (strcmp(courant->TypeEntite, "int") == 0)
-            sprintf(valeurStr, "%d", courant->valeur.valeurInt);
-        else if (strcmp(courant->TypeEntite, "float") == 0)
-            sprintf(valeurStr, "%.2f", courant->valeur.valeurFloat);
-        else
-            strcpy(valeurStr, "N/A");
-
-        printf("| %-12s | %-14s | %-12s | %-10s |\n",
-               courant->NomEntite,
-               courant->CodeEntite,
-               courant->TypeEntite,
-               valeurStr);
-
-        courant = courant->suivant;
+    int count = 0;
+    int i, j;  
+    TSNode* temp = current;
+    while (temp != NULL) {
+        count++;
+        temp = temp->suivant;
     }
-
+    
+    // On parcourt en partant de la fin
+    for (i = count - 1; i >= 0; i--) {
+        temp = current;
+        for (j = 0; j < i; j++) {
+            temp = temp->suivant;
+        }
+        
+        char valueStr[20];
+        if (strcmp(temp->TypeEntite, "int") == 0) {
+            sprintf(valueStr, "%d", temp->valeur.valeurInt);
+        } else if (strcmp(temp->TypeEntite, "float") == 0) {
+            sprintf(valueStr, "%.2f", temp->valeur.valeurFloat);
+        } else {
+            strcpy(valueStr, "N/A");
+        }
+        
+        printf("| %-12s | %-14s | %-12s | %-10s |\n",
+               temp->NomEntite,
+               temp->CodeEntite,
+               temp->TypeEntite,
+               valueStr);
+    }
     printf("__________________________________________________________________\n");
 }
-
-// void afficherTS() {
-//     printf("\n/*************** Table des symboles (TS) ******************/\n");
-//     printf("__________________________________________________________________\n");
-//     printf("| %-12s | %-14s | %-12s | %-10s |\n", "NomEntite", "CodeEntite", "TypeEntite", "Valeur");
-//     printf("__________________________________________________________________\n");
-
-//     TSNode* courant = tsHead;
-
-//     while (courant != NULL) {
-//         char valeurStr[20];
-
-//         if (strcmp(courant->TypeEntite, "int") == 0) {
-//             if (!courant->estInitialise) {
-//                 int val;
-//                 printf("Entrez la valeur entière pour %s : ", courant->NomEntite);
-//                 scanf("%d", &val);
-//                 courant->valeur.valeurInt = val;
-//                 courant->estInitialise = 1;
-//             }
-//             sprintf(valeurStr, "%d", courant->valeur.valeurInt);
-//         } else if (strcmp(courant->TypeEntite, "float") == 0) {
-//             if (!courant->estInitialise) {
-//                 float val;
-//                 printf("Entrez la valeur flottante pour %s : ", courant->NomEntite);
-//                 scanf("%f", &val);
-//                 courant->valeur.valeurFloat = val;
-//                 courant->estInitialise = 1;
-//             }
-//             sprintf(valeurStr, "%.2f", courant->valeur.valeurFloat);
-//         } else {
-//             strcpy(valeurStr, "N/A");
-//         }
-
-//         printf("| %-12s | %-14s | %-12s | %-10s |\n",
-//                courant->NomEntite,
-//                courant->CodeEntite,
-//                courant->TypeEntite,
-//                valeurStr);
-
-//         courant = courant->suivant;
-//     }
-
-//     printf("__________________________________________________________________\n");
-// }
-
 
 void afficherMRecursif(SMNode* node) {
     if (node == NULL) return;

@@ -23,17 +23,17 @@
 
 %token MAINPRGM VAR BEGINPG ENDPG LET ATDEF CONST INPUT OUTPUT
 %token <str> TYPEINT TYPEFLOAT 
-%token <entier> ENTIER ENTIERSIGNE ENTIERERROR
+%token <entier> ENTIER ENTIERSIGNE 
 %token <flottant> FLOAT
 
 %token <str> IDF 
-/* Opérateurs arithmétiques */
+
 %token PLUS MINUS TIMES DIV 
 
-/* Opérateurs logiques */
+
 %token AND OR NOT
 
-/* Opérateurs de comparaison */
+
 %token EQ NEQ IE SE I S
 
 /* Symboles spéciaux */
@@ -44,7 +44,8 @@
 %token IF THEN ELSE DO WHILE FOR FROM TO STEP
 %token CHAINE VAR_IDF
 %type <flottant> expression 
-/* Définition des priorités et associativités */
+
+
 %left OR
 %left AND
 %left NOT
@@ -150,7 +151,6 @@ instruction : affectation PVG
             ;
 
 affectation : IDF AFFECTATION expression {
-                                          printf("la valeur est %f\n" , $3);
                                            if (!variable_declaree($1)) {
                                           printf("Erreur semantique : Variable '%s' non declaree a la ligne %d\n", $1, nb_ligne);
          
@@ -160,22 +160,27 @@ affectation : IDF AFFECTATION expression {
                                            if (rechercheType($1) == 0){ 
                                             printf("Erreur semantique: %s non declare a la ligne %d\n", $1, nb_ligne);
 
-                                            }
+                                           }
                                             // Vérification type
-                                            else {
+                                           else {
                                              strcpy(currentVarType, obtenirTypeVariable($1));
             
-                                       // Conversion autorisée : int -> float
-                                     if (strcmp(currentVarType, "Float") == 0 && strcmp(currentExprType, "Int") == 0) {
-                                      // Conversion implicite autorisée
-                                     }
-                                 // Conversion interdite : float -> int
-                                else if (strcmp(currentVarType, "Int") == 0 && strcmp(currentExprType, "Float") == 0) {
-                               printf("Erreur semantique (ligne %d): Conversion float->int impossible pour '%s'\n", 
-                                   nb_ligne, $1);
-                                    }
-                                
-                                           }
+                                             // Conversion autorisée : int -> float
+                                            if (strcmp(currentVarType, "Float") == 0 && strcmp(currentExprType, "Int") == 0) {
+                                             // Conversion implicite autorisée
+                                            }
+                                            // Conversion interdite : float -> int
+                                            else if (strcmp(currentVarType, "Int") == 0 && strcmp(currentExprType, "Float") == 0) {
+                                                printf("Erreur semantique (ligne %d): Conversion float->int impossible pour '%s'\n", 
+                                                nb_ligne, $1);
+                                            }
+                                            strcpy(currentVarType, obtenirTypeVariable($1));
+                                            if (strcmp(currentVarType, "Int") == 0) {
+                                               update_value($1, $3, 0.0f); // mise à jour avec une valeur entière
+                                            } else if (strcmp(currentVarType, "Float") == 0) {
+                                               update_value($1, 0, (float)$3); // mise à jour avec une valeur flottante
+                                            }
+                                            }
                                             
 
                                          }
