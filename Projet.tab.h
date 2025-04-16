@@ -76,20 +76,19 @@
      PVG = 292,
      DEUXPOINT = 293,
      VRG = 294,
-     GUILLEMET = 295,
-     EGAL = 296,
-     AFFECTATION = 297,
-     IF = 298,
-     THEN = 299,
-     ELSE = 300,
-     DO = 301,
-     WHILE = 302,
-     FOR = 303,
-     FROM = 304,
-     TO = 305,
-     STEP = 306,
-     CHAINE = 307,
-     VAR_IDF = 308
+     EGAL = 295,
+     AFFECTATION = 296,
+     IF = 297,
+     THEN = 298,
+     ELSE = 299,
+     DO = 300,
+     WHILE = 301,
+     FOR = 302,
+     FROM = 303,
+     TO = 304,
+     STEP = 305,
+     CHAINE = 306,
+     VAR_IDF = 307
    };
 #endif
 
@@ -109,7 +108,7 @@ typedef union YYSTYPE
 
 
 /* Line 1676 of yacc.c  */
-#line 113 "Projet.tab.h"
+#line 112 "Projet.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

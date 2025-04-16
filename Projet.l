@@ -14,7 +14,7 @@
     }
 %}
 
-lettreMaj [A-Z]
+
 lettre [a-z]
 chiffre [0-9]
 entier  {chiffre}+
@@ -29,8 +29,9 @@ ERREUR_UNDERS_IDENT _({lettre}|{chiffre}|_)*
 
 %%
 
-\{--(.|\n)*?--\}  
-"<!-"(.|\n)*?"-!>" 
+\{--(.|\n)*?--\}   
+"<!-"([^-]|-[^!])*"-!>"
+
 
 "MainPrgm"      { printf("Mot-cle detecte : MainPrgm\n"); insererM(yytext, "MAINPRGM"); nb_colonne += yyleng; return MAINPRGM; }
 "Var"           { printf("Mot-cle detecte : Var\n"); insererM(yytext, "VAR"); nb_colonne += yyleng; return VAR; }
@@ -125,7 +126,7 @@ ERREUR_UNDERS_IDENT _({lettre}|{chiffre}|_)*
 ":="  { printf("Affectation\n");insererS(yytext, " AFFECTATION");nb_colonne += yyleng; return AFFECTATION ;}
 
 {lettre}     { printf("Lettre: %s\n", yytext); yylval.str=strdup(yytext);insererTS(yytext, "IDF");nb_colonne += yyleng; return IDF; }
-{lettreMaj}  { printf("Lettre: %s\n", yytext); yylval.str=strdup(yytext);insererTS(yytext, "IDF"); nb_colonne += yyleng; return IDF; }
+
 
 {IDF}       { 
                 if (yyleng > 14) {
