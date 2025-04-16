@@ -47,12 +47,12 @@ ERREUR_UNDERS_IDENT _({lettre}|{chiffre}|_)*
 
 {entier}  { 
                 yylval.entier = atoi(yytext); 
-                if (yylval.entier < -32768 || yylval.entier > 32767) 
+                if (yylval.entier < -32768 || yylval.entier > 32767) {
                     afficher_erreur("Valeur entiere hors limite", yytext, "Nombre trop grand ou trop petit");
-                else 
+                }else {
                    printf("Entier : %s\n", yytext);
-                nb_colonne += yyleng;
-                return ENTIER;
+                   nb_colonne += yyleng;
+                   return ENTIER;}
             }
 
 {entier_signe} { 
@@ -60,24 +60,19 @@ ERREUR_UNDERS_IDENT _({lettre}|{chiffre}|_)*
                     strncpy(copie, yytext + 1, yyleng - 2);
                     copie[yyleng - 2] = '\0';
                     yylval.entier = atoi(copie);
-                    if (yylval.entier < -32768 || yylval.entier > 32767) 
+                    if (yylval.entier < -32768 || yylval.entier > 32767) {
                         afficher_erreur("Valeur entiere hors limite", yytext, "Nombre trop grand ou trop petit");
-                    else 
+                    }else {
                         printf("Entier signe : %s\n", yytext);
-                
-                    nb_colonne += yyleng;
-                    return ENTIERSIGNE;
+                        nb_colonne += yyleng;
+                        return ENTIERSIGNE;}
                 } 
 
 [+-]{chiffre}+ { 
-    afficher_erreur("Syntaxe invalide", yytext, "Un entier signe doit etre entre parentheses");
-    nb_colonne += yyleng;
-     return ENTIERERROR;
+    afficher_erreur("Syntaxe invalide", yytext, "Un entier signe doit etre entre parentheses");  
 }
 [+-]{chiffre}+.{chiffre}+ { 
     afficher_erreur("Syntaxe invalide", yytext, "Un flottant signe doit etre entre parentheses");
-    nb_colonne += yyleng;
-    return ENTIERERROR;
 }
 
 {flottant}   { printf("float non signe %s\n", yytext);nb_colonne += yyleng;yylval.flottant = atof(yytext); return FLOAT; }
@@ -95,11 +90,9 @@ ERREUR_UNDERS_IDENT _({lettre}|{chiffre}|_)*
 "step"    { printf("Mot-cle : %s\n", yytext); insererM(yytext, "STEP");nb_colonne += yyleng;return STEP;}
 
 {ERREUR_NUM_IDENT}  { afficher_erreur("Identificateur invalide", yytext, "Un IDF ne peut pas commencer par un chiffre"); 
-                      nb_colonne += yyleng;
                     }
 {ERREUR_UNDERS_IDENT} {
                        afficher_erreur("Identificateur invalide", yytext, "Un IDF ne doit pas commencer par '_'");
-                       nb_colonne += yyleng;
                       }
 
 "+"   { printf("Operateur arithmetique : %s\n", yytext);insererS(yytext, "PLUS");nb_colonne += yyleng; return PLUS; }
@@ -128,7 +121,6 @@ ERREUR_UNDERS_IDENT _({lettre}|{chiffre}|_)*
 ";"   { printf("Point virgule\n");insererS(yytext, "PVG");nb_colonne += yyleng; return PVG; }
 ":"   { printf("Deux points\n");insererS(yytext, "DEUXPOINT");nb_colonne += yyleng; return DEUXPOINT; }
 ","   { printf("Virgule\n");insererS(yytext, "VRG");nb_colonne += yyleng; return VRG; }
-"\'"  { printf("Guillemets\n");insererS(yytext, "GUILLEMET");nb_colonne += yyleng; return GUILLEMET; }
 "="   { printf("Egal\n");insererS(yytext, "EGAL");nb_colonne += yyleng; return EGAL; }
 ":="  { printf("Affectation\n");insererS(yytext, " AFFECTATION");nb_colonne += yyleng; return AFFECTATION ;}
 
@@ -136,18 +128,18 @@ ERREUR_UNDERS_IDENT _({lettre}|{chiffre}|_)*
 {lettreMaj}  { printf("Lettre: %s\n", yytext); yylval.str=strdup(yytext);insererTS(yytext, "IDF"); nb_colonne += yyleng; return IDF; }
 
 {IDF}       { 
-                if (yyleng > 14) 
+                if (yyleng > 14) {
                      afficher_erreur("Identificateur trop long", yytext, "Un IDF ne peut pas dépasser 14 caracteres");
-                else if (strstr(yytext, "__") != NULL) 
+                }else if (strstr(yytext, "__") != NULL) {
                     afficher_erreur("Identificateur invalide", yytext, "Un IDF ne doit pas contenir '__'");
-                else if (yytext[yyleng - 1] == '_') 
+                }else if (yytext[yyleng - 1] == '_') {
                     afficher_erreur("Identificateur invalide", yytext, "Un IDF ne doit pas se terminer par '_'");
-                else 
+                }else {
                      printf("Identificateur valide : %s\n", yytext); 
                      yylval.str=strdup(yytext);
                      insererTS(yytext, "IDF");
-                nb_colonne += yyleng;
-                return IDF;
+                     nb_colonne += yyleng;
+                     return IDF;}
             }  
 
 
@@ -157,8 +149,7 @@ ERREUR_UNDERS_IDENT _({lettre}|{chiffre}|_)*
 
 [ \t]+      {nb_colonne += yyleng;}
 \n          { nb_ligne++,nb_colonne = 1; }
-.           { afficher_erreur("Erreur lexicale", yytext, "Caractere inconnu"); 
-              nb_colonne += yyleng; return ERREUR; 
+.           { afficher_erreur("Erreur lexicale", yytext, "Caractere inconnu");  
             }
 
 %%

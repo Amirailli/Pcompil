@@ -828,12 +828,12 @@ YY_RULE_SETUP
 #line 48 "Projet.l"
 { 
                 yylval.entier = atoi(yytext); 
-                if (yylval.entier < -32768 || yylval.entier > 32767) 
+                if (yylval.entier < -32768 || yylval.entier > 32767) {
                     afficher_erreur("Valeur entiere hors limite", yytext, "Nombre trop grand ou trop petit");
-                else 
+                }else {
                    printf("Entier : %s\n", yytext);
-                nb_colonne += yyleng;
-                return ENTIER;
+                   nb_colonne += yyleng;
+                   return ENTIER;}
             }
 	YY_BREAK
 case 15:
@@ -844,289 +844,281 @@ YY_RULE_SETUP
                     strncpy(copie, yytext + 1, yyleng - 2);
                     copie[yyleng - 2] = '\0';
                     yylval.entier = atoi(copie);
-                    if (yylval.entier < -32768 || yylval.entier > 32767) 
+                    if (yylval.entier < -32768 || yylval.entier > 32767) {
                         afficher_erreur("Valeur entiere hors limite", yytext, "Nombre trop grand ou trop petit");
-                    else 
+                    }else {
                         printf("Entier signe : %s\n", yytext);
-                
-                    nb_colonne += yyleng;
-                    return ENTIERSIGNE;
+                        nb_colonne += yyleng;
+                        return ENTIERSIGNE;}
                 } 
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 72 "Projet.l"
+#line 71 "Projet.l"
 { 
-    afficher_erreur("Syntaxe invalide", yytext, "Un entier signe doit etre entre parentheses");
-    nb_colonne += yyleng;
-     return ENTIERERROR;
+    afficher_erreur("Syntaxe invalide", yytext, "Un entier signe doit etre entre parentheses");  
 }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 77 "Projet.l"
+#line 74 "Projet.l"
 { 
     afficher_erreur("Syntaxe invalide", yytext, "Un flottant signe doit etre entre parentheses");
-    nb_colonne += yyleng;
-    return ENTIERERROR;
 }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 83 "Projet.l"
+#line 78 "Projet.l"
 { printf("float non signe %s\n", yytext);nb_colonne += yyleng;yylval.flottant = atof(yytext); return FLOAT; }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 85 "Projet.l"
+#line 80 "Projet.l"
 { printf("float signe %s\n", yytext); yylval.flottant = atof(yytext); nb_colonne += yyleng; return FLOAT;  }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 87 "Projet.l"
+#line 82 "Projet.l"
 { printf("Mot-cle : %s\n", yytext); insererM(yytext, "IF"); nb_colonne += yyleng;return IF;}
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 88 "Projet.l"
+#line 83 "Projet.l"
 { printf("Mot-cle : %s\n", yytext);insererM(yytext, "THEN"); nb_colonne += yyleng;return THEN ;}
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 89 "Projet.l"
+#line 84 "Projet.l"
 { printf("Mot-cle : %s\n", yytext); insererM(yytext,"ELSE");nb_colonne += yyleng;return ELSE ;}
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 90 "Projet.l"
+#line 85 "Projet.l"
 { printf("Mot-cle : %s\n", yytext);insererM(yytext, "DO"); nb_colonne += yyleng;return DO;}
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 91 "Projet.l"
+#line 86 "Projet.l"
 { printf("Mot-cle : %s\n", yytext);insererM(yytext, "WHILE"); nb_colonne += yyleng;return WHILE ;}
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 92 "Projet.l"
+#line 87 "Projet.l"
 { printf("Mot-cle : %s\n", yytext); insererM(yytext, "FOR");nb_colonne += yyleng;return FOR;}
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 93 "Projet.l"
+#line 88 "Projet.l"
 { printf("Mot-cle : %s\n", yytext); insererM(yytext, "FROM");nb_colonne += yyleng;return FROM;}
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 94 "Projet.l"
+#line 89 "Projet.l"
 { printf("Mot-cle : %s\n", yytext); insererM(yytext, "TO");nb_colonne += yyleng;return TO;}
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 95 "Projet.l"
+#line 90 "Projet.l"
 { printf("Mot-cle : %s\n", yytext); insererM(yytext, "STEP");nb_colonne += yyleng;return STEP;}
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 97 "Projet.l"
+#line 92 "Projet.l"
 { afficher_erreur("Identificateur invalide", yytext, "Un IDF ne peut pas commencer par un chiffre"); 
-                      nb_colonne += yyleng;
                     }
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 100 "Projet.l"
+#line 94 "Projet.l"
 {
                        afficher_erreur("Identificateur invalide", yytext, "Un IDF ne doit pas commencer par '_'");
-                       nb_colonne += yyleng;
                       }
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 105 "Projet.l"
+#line 98 "Projet.l"
 { printf("Operateur arithmetique : %s\n", yytext);insererS(yytext, "PLUS");nb_colonne += yyleng; return PLUS; }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 106 "Projet.l"
+#line 99 "Projet.l"
 { printf("Operateur arithmetique : %s\n", yytext);insererS(yytext, "MINUS");nb_colonne += yyleng; return MINUS; }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 107 "Projet.l"
+#line 100 "Projet.l"
 { printf("Operateur arithmetique : %s\n", yytext);insererS(yytext, "TIMES");nb_colonne += yyleng; return TIMES; }
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 108 "Projet.l"
+#line 101 "Projet.l"
 { printf("Operateur arithmetique : %s\n", yytext);insererS(yytext, "DIV");nb_colonne += yyleng; return DIV; }
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 110 "Projet.l"
+#line 103 "Projet.l"
 { printf("Operateur logique : %s\n", yytext);insererS(yytext, "AND");nb_colonne += yyleng; return AND; }
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 111 "Projet.l"
+#line 104 "Projet.l"
 { printf("Operateur logique : %s\n", yytext);insererS(yytext, "OR");nb_colonne += yyleng; return OR; }
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 112 "Projet.l"
+#line 105 "Projet.l"
 { printf("Operateur NOT : %s\n", yytext);insererS(yytext, "NOT"); nb_colonne += yyleng; return NOT; }
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 114 "Projet.l"
+#line 107 "Projet.l"
 { printf("Operateur de comparaison : %s\n", yytext);insererS(yytext, "EQ");nb_colonne += yyleng; return EQ; }
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 115 "Projet.l"
+#line 108 "Projet.l"
 { printf("Operateur de comparaison : %s\n", yytext);insererS(yytext, "NEQ");nb_colonne += yyleng; return NEQ; }
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 116 "Projet.l"
+#line 109 "Projet.l"
 { printf("Operateur de comparaison : %s\n", yytext);insererS(yytext, "IE");nb_colonne += yyleng; return IE; }
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 117 "Projet.l"
+#line 110 "Projet.l"
 { printf("Operateur de comparaison : %s\n", yytext);insererS(yytext, "SE");nb_colonne += yyleng; return SE; }
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 118 "Projet.l"
+#line 111 "Projet.l"
 { printf("Operateur de comparaison : %s\n", yytext);insererS(yytext, "I");nb_colonne += yyleng; return I; }
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 119 "Projet.l"
+#line 112 "Projet.l"
 { printf("Operateur de comparaison : %s\n", yytext);insererS(yytext, "S");nb_colonne += yyleng; return S; }
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 121 "Projet.l"
+#line 114 "Projet.l"
 { printf("Ouverture de bloc\n");insererS(yytext, "OUVEREBLOC");nb_colonne += yyleng; return OUVEREBLOC; }
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 122 "Projet.l"
+#line 115 "Projet.l"
 { printf("Fermeture de bloc\n");insererS(yytext, "FERMETBLOC");nb_colonne += yyleng; return FERMETBLOC; }
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 123 "Projet.l"
+#line 116 "Projet.l"
 { printf("Crochet ouvrant\n");insererS(yytext, "CROCHETOUVERT");nb_colonne += yyleng; return CROCHETOUVERT; }
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 124 "Projet.l"
+#line 117 "Projet.l"
 { printf("Crochet fermant\n");insererS(yytext, "CROCHETFERME"); nb_colonne += yyleng; return  CROCHETFERME; }
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 125 "Projet.l"
+#line 118 "Projet.l"
 { printf("Parenthese ouvrante\n");insererS(yytext, "PARENTHESEOUVERT"); nb_colonne += yyleng; return PARENTHESEOUVERT; }
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 126 "Projet.l"
+#line 119 "Projet.l"
 { printf("Parenthese fermante\n");insererS(yytext, "PARENTHESEFERME"); nb_colonne += yyleng; return  PARENTHESEFERME; }
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 128 "Projet.l"
+#line 121 "Projet.l"
 { printf("Point virgule\n");insererS(yytext, "PVG");nb_colonne += yyleng; return PVG; }
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 129 "Projet.l"
+#line 122 "Projet.l"
 { printf("Deux points\n");insererS(yytext, "DEUXPOINT");nb_colonne += yyleng; return DEUXPOINT; }
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
-#line 130 "Projet.l"
+#line 123 "Projet.l"
 { printf("Virgule\n");insererS(yytext, "VRG");nb_colonne += yyleng; return VRG; }
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 131 "Projet.l"
+#line 124 "Projet.l"
 { printf("Guillemets\n");insererS(yytext, "GUILLEMET");nb_colonne += yyleng; return GUILLEMET; }
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
-#line 132 "Projet.l"
+#line 125 "Projet.l"
 { printf("Egal\n");insererS(yytext, "EGAL");nb_colonne += yyleng; return EGAL; }
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-#line 133 "Projet.l"
+#line 126 "Projet.l"
 { printf("Affectation\n");insererS(yytext, " AFFECTATION");nb_colonne += yyleng; return AFFECTATION ;}
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
-#line 135 "Projet.l"
+#line 128 "Projet.l"
 { printf("Lettre: %s\n", yytext); yylval.str=strdup(yytext);insererTS(yytext, "IDF");nb_colonne += yyleng; return IDF; }
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
-#line 136 "Projet.l"
+#line 129 "Projet.l"
 { printf("Lettre: %s\n", yytext); yylval.str=strdup(yytext);insererTS(yytext, "IDF"); nb_colonne += yyleng; return IDF; }
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
-#line 138 "Projet.l"
+#line 131 "Projet.l"
 { 
-                if (yyleng > 14) 
+                if (yyleng > 14) {
                      afficher_erreur("Identificateur trop long", yytext, "Un IDF ne peut pas dépasser 14 caracteres");
-                else if (strstr(yytext, "__") != NULL) 
+                }else if (strstr(yytext, "__") != NULL) {
                     afficher_erreur("Identificateur invalide", yytext, "Un IDF ne doit pas contenir '__'");
-                else if (yytext[yyleng - 1] == '_') 
+                }else if (yytext[yyleng - 1] == '_') {
                     afficher_erreur("Identificateur invalide", yytext, "Un IDF ne doit pas se terminer par '_'");
-                else 
+                }else {
                      printf("Identificateur valide : %s\n", yytext); 
                      yylval.str=strdup(yytext);
                      insererTS(yytext, "IDF");
-                nb_colonne += yyleng;
-                return IDF;
+                     nb_colonne += yyleng;
+                     return IDF;}
             }  
 	YY_BREAK
 case 59:
 YY_RULE_SETUP
-#line 154 "Projet.l"
+#line 147 "Projet.l"
 {printf("var_idf: %s\n", yytext);return VAR_IDF;}
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
-#line 156 "Projet.l"
+#line 149 "Projet.l"
 {printf("chaine: %s\n", yytext);return CHAINE; }
 	YY_BREAK
 case 61:
 YY_RULE_SETUP
-#line 158 "Projet.l"
+#line 151 "Projet.l"
 {nb_colonne += yyleng;}
 	YY_BREAK
 case 62:
 YY_RULE_SETUP
-#line 159 "Projet.l"
+#line 152 "Projet.l"
 { nb_ligne++,nb_colonne = 1; }
 	YY_BREAK
 case 63:
 YY_RULE_SETUP
-#line 160 "Projet.l"
-{ afficher_erreur("Erreur lexicale", yytext, "Caractere inconnu"); 
-              nb_colonne += yyleng; return ERREUR; 
+#line 153 "Projet.l"
+{ afficher_erreur("Erreur lexicale", yytext, "Caractere inconnu");  
             }
 	YY_BREAK
 case 64:
 YY_RULE_SETUP
-#line 164 "Projet.l"
+#line 156 "Projet.l"
 ECHO;
 	YY_BREAK
-#line 1130 "lex.yy.c"
+#line 1122 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2012,4 +2004,4 @@ int main()
 	return 0;
 	}
 #endif
-#line 164 "Projet.l"
+#line 156 "Projet.l"
